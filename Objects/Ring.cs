@@ -12,7 +12,7 @@ namespace Objects
         public bool hasPassed;
         public RingType type;
         public Cylinder Shape;
-        public Box Insides;
+        public Cylinder Insides;
 
         private List<IObserver<ModelCollision>> Observers;
 
@@ -25,6 +25,8 @@ namespace Objects
         {
             hasPassed = false;
 
+            Observers = new List<IObserver<ModelCollision>>();
+
             base.Initialize();
         }
 
@@ -33,16 +35,18 @@ namespace Objects
             this.type = type;
         }
 
-        public IDisposable Subscribe(IObserver<ModelCollision> observer)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void LoadContent()
         {
             Shape = new Cylinder(Vector3.Zero, 30, 1);
 
             base.LoadContent();
+        }
+
+        public IDisposable Subscribe(IObserver<ModelCollision> observer)
+        {
+            Observers.Add(observer);
+
+            return null;
         }
     }
 
