@@ -33,16 +33,16 @@ namespace Objects
             this.type = type;
         }
 
+        public IDisposable Subscribe(IObserver<ModelCollision> observer)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override void LoadContent()
         {
             Shape = new Cylinder(Vector3.Zero, 30, 1);
 
             base.LoadContent();
-        }
-
-        IDisposable Subscribe(IObserver<ModelCollision> observer)
-        {
-            throw new NotImplementedException();
         }
     }
 

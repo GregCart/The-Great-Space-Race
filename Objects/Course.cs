@@ -18,13 +18,6 @@ namespace Objects
 
         }
 
-        public override void Initialize()
-        {
-            space = new Space();
-
-            base.Initialize();
-        }
-
         public override void Update(GameTime gameTime)
         {
             space.Update();
@@ -32,22 +25,29 @@ namespace Objects
             base.Update(gameTime);
         }
 
-        void IObserver<ModelCollision>.OnCompleted()
+        public override void Initialize()
+        {
+            space = new Space();
+
+            base.Initialize();
+        }
+
+        public void OnCompleted()
         {
             throw new NotImplementedException();
         }
 
-        void IObserver<ModelCollision>.OnError(Exception error)
+        public void OnError(Exception error)
         {
             throw new NotImplementedException();
         }
 
-        void IObserver<ModelCollision>.OnNext(ModelCollision value)
+        public void OnNext(ModelCollision value)
         {
             throw new NotImplementedException();
         }
 
-        IDisposable IObservable<ModelCollision>.Subscribe(IObserver<ModelCollision> observer)
+        public IDisposable Subscribe(IObserver<ModelCollision> observer)
         {
             throw new NotImplementedException();
         }
