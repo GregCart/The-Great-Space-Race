@@ -17,7 +17,7 @@ namespace Objects
         private List<IObserver<ModelCollision>> Observers;
 
 
-        public Ring(Game game) : base(game)
+        public Ring(Game1 game) : base(game)
         {
         }
 
@@ -46,7 +46,7 @@ namespace Objects
         {
             Observers.Add(observer);
 
-            return null;
+            return this;
         }
     }
 

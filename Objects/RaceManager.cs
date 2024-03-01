@@ -1,11 +1,12 @@
 ﻿using BEPUphysics;
+using Microsoft.Xna.Framework;
 using System;
 using The_Great_Space_Race;
 
 
 namespace Objects
 {
-    public class RaceManager : IObserver<ModelCollision>
+    public class RaceManager : GameComponent, IObserver<ModelCollision>
     {
         private static RaceManager instance;
 
@@ -21,7 +22,17 @@ namespace Objects
                 return instance;
             }
         }
-        public static Course[] tracks;
+        public static Course activeTrack;
+
+        public RaceManager(Game1 game): base(game)
+        {
+
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
 
         public void OnCompleted()
         {

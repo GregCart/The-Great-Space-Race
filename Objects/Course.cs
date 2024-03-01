@@ -10,30 +10,54 @@ namespace Objects
     public class Course : GameComponent, IObserver<ModelCollision>, IObservable<ModelCollision>
     {
         public Space space;
-        public Ring[] rings;
+        public Ring[] Rings;
         public bool IsOrdered;
         public int LastEntered;
 
-        private List<IObserver<ModelCollision>> Observers;
-
-        public Course(Game game) : base(game)
+        private static List<IObserver<ModelCollision>> Observers
         {
+            get
+            {
+                if (Observers == null)
+                {
+                    Observers = new List<IObserver<ModelCollision>>();
+                }
 
+                return Observers;
+            }
+        }
+
+        public Course(Game1 game) : base(game)
+        {
+            this.IsOrdered = false;
+            this.LastEntered = -1;
+            
         }
 
         public override void Initialize()
         {
             space = new Space();
-
-            Observers = new List<IObserver<ModelCollision>>();
+            
+            foreach(Ring r in Rings)
+            {
+                Game.Components.Add(r);
+            }
 
             base.Initialize();
 
-            foreach (Ring r in rings)
+            foreach (Ring r in Rings)
             {
                 space.Add(r.Shape);
                 space.Add(r.Insides);
             }
+        }
+
+        public void Initialize(bool isOrdered, List<Ring> rings) 
+        {
+            this.IsOrdered = isOrdered;
+            this.Rings = rings.ToArray();
+
+            this.Initialize();
         }
 
         public override void Update(GameTime gameTime)
@@ -62,7 +86,7 @@ namespace Objects
         {
             Observers.Add(observer);
 
-            return null;
+            return this;
         }
     }
 }
