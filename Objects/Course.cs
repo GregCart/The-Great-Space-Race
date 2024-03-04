@@ -47,8 +47,8 @@ namespace Objects
 
             foreach (Ring r in Rings)
             {
-                space.Add(r.Shape);
-                space.Add(r.Insides);
+                space.Add(r.shape);
+                space.Add(r.threshold);
             }
         }
 

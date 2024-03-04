@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework;
 using The_Great_Space_Race;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
+using BEPUphysics.Entities;
+using BEPUutilities;
+using Matrix = BEPUutilities.Matrix;
 
 namespace Objects
 {
@@ -11,14 +15,18 @@ namespace Objects
     {
         public bool hasPassed;
         public RingType type;
-        public Cylinder Shape;
-        public Cylinder Insides;
+        public Cylinder shape;
+        public Cylinder threshold;
+        public Model model;
+        public Entity entity;
+        public Matrix Transform;
 
         private List<IObserver<ModelCollision>> Observers;
 
 
         public Ring(Game1 game) : base(game)
         {
+
         }
 
         public override void Initialize()
@@ -37,7 +45,7 @@ namespace Objects
 
         protected override void LoadContent()
         {
-            Shape = new Cylinder(Vector3.Zero, 30, 1);
+            shape = new Cylinder(Vector3.Zero, 30, 1);
 
             base.LoadContent();
         }
