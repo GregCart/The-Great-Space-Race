@@ -5,7 +5,7 @@ using BEPUphysics.Entities;
 namespace The_Great_Space_Race.Objects
 {
     //stolen from Getting Started Demo https://github.com/bepu/bepuphysics1/blob/master/Documentation/Isolated%20Demos/GettingStartedDemo/EntityModel.cs
-    internal class TestBox : DrawableGameComponent
+    internal class TestEntityModel : DrawableGameComponent
     {
         /// <summary>
         /// Entity that this model follows.
@@ -26,7 +26,7 @@ namespace The_Great_Space_Race.Objects
         /// <param name="model">Graphical representation to use for the entity.</param>
         /// <param name="transform">Base transformation to apply to the model before moving to the entity.</param>
         /// <param name="game">Game to which this component will belong.</param>
-        public TestBox(Entity entity, Model model, BEPUutilities.Matrix transform, Game game)
+        public TestEntityModel(Entity entity, Model model, BEPUutilities.Matrix transform, Game game)
             : base(game)
         {
             this.entity = entity;
@@ -52,7 +52,7 @@ namespace The_Great_Space_Race.Objects
             //and translation of the entity combined.
             //There are a variety of properties available in the entity, try looking around
             //in the list to familiarize yourself with it.
-            Matrix worldMatrix = MathConverter.Convert(Transform * entity.WorldTransform);
+            Matrix worldMatrix = Transform.toXNA() * entity.WorldTransform.toXNA();
 
 
             model.CopyAbsoluteBoneTransformsTo(boneTransforms);
@@ -61,8 +61,8 @@ namespace The_Great_Space_Race.Objects
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.World = boneTransforms[mesh.ParentBone.Index] * worldMatrix;
-                    effect.View = MathConverter.Convert((Game as GettingStartedGame).Camera.ViewMatrix);
-                    effect.Projection = MathConverter.Convert((Game as GettingStartedGame).Camera.ProjectionMatrix);
+                    effect.View = (Game as Game1).testCamera.ViewMatrix.toXNA();
+                    effect.Projection = (Game as Game1).testCamera.ProjectionMatrix.toXNA();
                 }
                 mesh.Draw();
             }
