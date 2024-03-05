@@ -70,4 +70,3 @@ namespace The_Great_Space_Race.Objects
         }
     }
 }
-}

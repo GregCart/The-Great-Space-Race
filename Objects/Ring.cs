@@ -38,7 +38,7 @@ namespace Objects
             base.Initialize();
         }
 
-        public void SetUp(Vector2 loc, RingType type) 
+        public void SetUp(RingType type) 
         {
             this.type = type;
         }

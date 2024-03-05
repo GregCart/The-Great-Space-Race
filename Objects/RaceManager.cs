@@ -14,11 +14,6 @@ namespace Objects
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new RaceManager();
-                }
-
                 return instance;
             }
         }
@@ -26,7 +21,7 @@ namespace Objects
 
         public RaceManager(Game1 game): base(game)
         {
-
+            instance = this;
         }
 
         public override void Initialize()

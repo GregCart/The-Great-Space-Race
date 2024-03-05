@@ -24,6 +24,8 @@ namespace The_Great_Space_Race
         private Space testSpace;
         private Box testBox;
         public Camera testCamera;
+        public KeyboardState KeyboardState;
+        public MouseState MouseState;
 
 
         public Game1()
@@ -46,7 +48,6 @@ namespace The_Great_Space_Race
 
             Services.AddService(typeof(RaceManager), raceManager);
             Services.AddService(typeof(InputManager), inputManager);
-            Services.AddService(typeof(SpriteBatch), _spriteBatch);
 
             foreach (Course c in cources)
             {
@@ -59,6 +60,7 @@ namespace The_Great_Space_Race
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            Services.AddService(typeof(SpriteBatch), _spriteBatch);
 
             testSpace.Add(testBox);
 

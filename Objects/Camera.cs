@@ -122,7 +122,7 @@ namespace Objects
         public void Update(float dt)
         {
             //Turn based on mouse input.
-            Yaw += (200 - Game..X) * dt * .12f;
+            Yaw += (200 - Game.MouseState.X) * dt * .12f;
             Pitch += (200 - Game.MouseState.Y) * dt * .12f;
             Mouse.SetPosition(200, 200);
 

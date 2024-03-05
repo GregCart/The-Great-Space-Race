@@ -19,15 +19,7 @@ namespace Objects
         public static float DownTime = 0.0f;
         public static InputManager Instance
         {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new InputManager(game);
-                }
-
-                return instance;
-            }
+            get { return instance; }
         }
 
         private static KeyboardState currentKeyState;
@@ -38,6 +30,7 @@ namespace Objects
 
         public InputManager(Game1 game) : base(game)
         {
+            instance = this;
         }
 
         public static void Reset()

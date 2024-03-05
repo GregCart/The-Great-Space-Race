@@ -14,18 +14,7 @@ namespace Objects
         public bool IsOrdered;
         public int LastEntered;
 
-        private static List<IObserver<ModelCollision>> Observers
-        {
-            get
-            {
-                if (Observers == null)
-                {
-                    Observers = new List<IObserver<ModelCollision>>();
-                }
-
-                return Observers;
-            }
-        }
+        private static List<IObserver<ModelCollision>> Observers;
 
         public Course(Game1 game) : base(game)
         {
