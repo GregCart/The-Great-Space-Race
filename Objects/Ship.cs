@@ -1,24 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
+using BEPUutilities;
 using Microsoft.Xna.Framework.Input;
 using Objects;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using Matrix = BEPUutilities.Matrix;
+using Vector3 = BEPUutilities.Vector3;
+using MathHelper = BEPUutilities.MathHelper;
+
+
 namespace The_Great_Space_Race.Objects
 {
     public class Ship : GameComponent, IObserver<InputEvent>
     {
         public string Name { get; set; }
         public Camera Camera { get; set; }
-        public EntityModel EntityModel { get; set; }
+        public EntityModel em { get; set; }
         public Vector3 Position { get; set; }
-        /// <summary>
-        /// Gets the world transformation of the camera.
-        /// </summary>
         public Matrix WorldMatrix { get; private set; }
-        /// <summary>
-        /// Gets the view matrix of the camera.
-        /// </summary>
         public Matrix ViewMatrix { get; private set; }
         public float Yaw
         {
@@ -46,7 +45,6 @@ namespace The_Great_Space_Race.Objects
 
         float yaw;
         float pitch;
-        float dt;
 
 
         public Ship(Game1 game) : base(game)
@@ -56,7 +54,8 @@ namespace The_Great_Space_Race.Objects
 
         public override void Initialize()
         {
-
+            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)",this.WorldMatrix, this.Game);
+            Camera = new Camera(Game, Position - new Vector3(-1, -2, 0), 5);
         }
 
         public void speedUp()

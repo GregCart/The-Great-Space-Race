@@ -38,7 +38,7 @@ namespace The_Great_Space_Race.Objects
             this.Transform = transform;
         }
 
-        public EntityModel(Entity entity, Model model, BEPUutilities.Matrix transform, Game game)
+        public EntityModel(Entity entity, Model model, Matrix transform, Game game)
             : base(game)
         {
             this.entity = entity;
@@ -88,8 +88,8 @@ namespace The_Great_Space_Race.Objects
                 foreach (BasicEffect effect in mesh.Effects)
                 {
                     effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA();
-                    //effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix.toXNA();
-                    //effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix.toXNA();
+                    effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix.toXNA();
+                    effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix.toXNA();
                 }
                 mesh.Draw();
             }

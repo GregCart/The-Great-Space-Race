@@ -71,7 +71,7 @@ namespace Objects
         /// <summary>
         /// Gets the game owning the camera.
         /// </summary>
-        public Game1 Game { get; private set; }
+        public Game Game { get; private set; }
 
         /// <summary>
         /// Constructs a new camera.
@@ -79,7 +79,7 @@ namespace Objects
         /// <param name="game">Game that this camera belongs to.</param>
         /// <param name="position">Initial position of the camera.</param>
         /// <param name="speed">Initial movement speed of the camera.</param>
-        public Camera(Game1 game, Vector3 position, float speed): base(game)
+        public Camera(Game game, Vector3 position, float speed): base(game)
         {
             Game = game;
             Position = position;
