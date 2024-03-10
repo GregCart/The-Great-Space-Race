@@ -1,32 +1,23 @@
-﻿using BEPUphysics.Entities.Prefabs;
-using Vector3 = BEPUutilities.Vector3;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using The_Great_Space_Race;
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using BEPUphysics.Entities;
-using BEPUutilities;
-using Matrix = BEPUutilities.Matrix;
+using The_Great_Space_Race.Objects;
 
 namespace Objects
 {
-    public class Ring : DrawableGameComponent, IObservable<ModelCollision>
+    public class Ring : GameComponent, IObservable<ModelCollision>
     {
         public bool hasPassed;
         public RingType type;
-        public Cylinder shape;
-        public Cylinder threshold;
-        public Model model;
-        public Entity entity;
-        public Matrix Transform;
+        public EntityModel em;
+
 
         private List<IObserver<ModelCollision>> Observers;
 
 
         public Ring(Game1 game) : base(game)
         {
-
         }
 
         public override void Initialize()
@@ -35,19 +26,21 @@ namespace Objects
 
             Observers = new List<IObserver<ModelCollision>>();
 
+            em = new EntityModel("RingLampV3_FullRing_100_Halo", new Matrix().toBEPU(), this.Game);
+
             base.Initialize();
+
+            Game.Components.Add(em);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
 
         public void SetUp(RingType type) 
         {
             this.type = type;
-        }
-
-        protected override void LoadContent()
-        {
-            shape = new Cylinder(Vector3.Zero, 30, 1);
-
-            base.LoadContent();
         }
 
         public IDisposable Subscribe(IObserver<ModelCollision> observer)

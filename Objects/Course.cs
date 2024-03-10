@@ -2,19 +2,25 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using The_Great_Space_Race;
+using The_Great_Space_Race.Objects;
 
 
 namespace Objects
 {
-    public class Course : GameComponent, IObserver<ModelCollision>, IObservable<ModelCollision>
+    public class Course : GameComponent, IObserver<ModelCollision>, IObservable<bool>
     {
+        public string Name { get; set; }
         public Space space;
         public Ring[] Rings;
         public bool IsOrdered;
         public int LastEntered;
 
-        private static List<IObserver<ModelCollision>> Observers;
+        private static List<IObserver<bool>> Observers;
+
+        private Ship ship;
+
 
         public Course(Game1 game) : base(game)
         {
@@ -34,11 +40,13 @@ namespace Objects
 
             base.Initialize();
 
-            foreach (Ring r in Rings)
+            /*foreach (Ring r in Rings)
             {
                 space.Add(r.shape);
-                space.Add(r.threshold);
             }
+
+            ship = Game.Components[0] as Ship;
+            this.space.Add(ship.EntityModel.entity);*/
         }
 
         public void Initialize(bool isOrdered, List<Ring> rings) 
@@ -58,12 +66,12 @@ namespace Objects
 
         public void OnCompleted()
         {
-            throw new NotImplementedException();
+            //do nothing
         }
 
         public void OnError(Exception error)
         {
-            throw new NotImplementedException();
+            Debug.WriteLine(error);
         }
 
         public void OnNext(ModelCollision value)
@@ -71,7 +79,7 @@ namespace Objects
             throw new NotImplementedException();
         }
 
-        public IDisposable Subscribe(IObserver<ModelCollision> observer)
+        public IDisposable Subscribe(IObserver<bool> observer)
         {
             Observers.Add(observer);
 

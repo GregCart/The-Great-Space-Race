@@ -8,7 +8,7 @@ using System.Collections.Generic;
 // from https://stackoverflow.com/questions/75449753/c-sharp-monogame-handling-mouse
 namespace Objects
 {
-    public class InputManager : GameComponent, IObservable<InputKeyEventArgs>
+    public class InputManager : GameComponent, IObservable<InputEvent>
     {
         public static bool LeftClicked = false;
         public static bool LeftWasClicked = false;
@@ -25,7 +25,7 @@ namespace Objects
         private static KeyboardState currentKeyState;
         private static KeyboardState previousKeyState;
         private static MouseState ms = new MouseState(), oms;
-        private static List<IObserver<InputKeyEventArgs>> Observers;
+        private static List<IObserver<InputEvent>> Observers;
         private static InputManager instance;
 
         public InputManager(Game1 game) : base(game)
@@ -56,16 +56,14 @@ namespace Objects
             if (currentKeyState.GetPressedKeyCount() > 0)
             {
                 ButtonDown = true;
+                foreach (Keys k in currentKeyState.GetPressedKeys())
+                {
+                    instance.Notify(new InputEvent { type = EventType.Key_Down, key = k });
+                }
             }
             if (LeftClicked)
             {
-                MDPos = ms.Position.ToVector2();
-                if (count)
-                {
-                    Time = (float)gameTime.TotalGameTime.TotalSeconds;
-                    count = false;
-                }
-                DownTime = (float)(gameTime.TotalGameTime.TotalSeconds - Time);
+                instance.Notify(new InputEvent { type = EventType.Mouse_Down, mouseState = ms });
             }
             else if (LeftWasClicked)
             {
@@ -100,11 +98,19 @@ namespace Objects
             return !currentKeyState.IsKeyDown(key) && previousKeyState.IsKeyDown(key);
         }
 
-        public IDisposable Subscribe(IObserver<InputKeyEventArgs> observer)
+        public IDisposable Subscribe(IObserver<InputEvent> observer)
         {
             Observers.Add(observer); 
             
             return this;
+        }
+
+        public void Notify(InputEvent iEvent)
+        {
+            foreach (IObserver<InputEvent> observer in Observers)
+            {
+                observer.OnNext(iEvent);
+            }
         }
     }
 }

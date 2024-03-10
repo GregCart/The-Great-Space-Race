@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace The_Great_Space_Race.Objects
+
+namespace Objects
 {
     public static class Helpers
     {
@@ -54,6 +51,18 @@ namespace The_Great_Space_Race.Objects
             ret.M44 = mat.M44;
 
             return ret;
+        }
+
+        public static Microsoft.Xna.Framework.Matrix[] toXNA(this BEPUutilities.Matrix[] mats)
+        {
+            List<Microsoft.Xna.Framework.Matrix> ret = new List<Microsoft.Xna.Framework.Matrix>();
+
+            foreach (BEPUutilities.Matrix mat in mats)
+            {
+                ret.Add(mat.toXNA());
+            }
+
+            return ret.ToArray();
         }
     }
 }

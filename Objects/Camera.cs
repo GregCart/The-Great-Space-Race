@@ -88,65 +88,18 @@ namespace Objects
             Mouse.SetPosition(200, 200);
         }
 
-        /// <summary>
-        /// Moves the camera forward using its speed.
-        /// </summary>
-        /// <param name="dt">Timestep duration.</param>
-        public void MoveForward(float dt)
-        {
-            Position += WorldMatrix.Forward * (dt * Speed);
-        }
-        /// <summary>
-        /// Moves the camera right using its speed.
-        /// </summary>
-        /// <param name="dt">Timestep duration.</param>
-        /// 
-        public void MoveRight(float dt)
-        {
-            Position += WorldMatrix.Right * (dt * Speed);
-        }
-        /// <summary>
-        /// Moves the camera up using its speed.
-        /// </summary>
-        /// <param name="dt">Timestep duration.</param>
-        /// 
-        public void MoveUp(float dt)
-        {
-            Position += new Vector3(0, (dt * Speed), 0);
-        }
+        
 
         /// <summary>
         /// Updates the camera's view matrix.
         /// </summary>
         /// <param name="dt">Timestep duration.</param>
-        public void Update(float dt)
+        public void Update(Matrix world, Matrix view)
         {
-            //Turn based on mouse input.
-            Yaw += (200 - Game.MouseState.X) * dt * .12f;
-            Pitch += (200 - Game.MouseState.Y) * dt * .12f;
-            Mouse.SetPosition(200, 200);
+            world.Translation = world.Translation + new Vector3(0.0f, 1.0f, -1.0f);
 
-            WorldMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, Pitch) * Matrix.CreateFromAxisAngle(Vector3.Up, Yaw);
-
-
-            float distance = Speed * dt;
-
-            //Scoot the camera around depending on what keys are pressed.
-            if (Game.KeyboardState.IsKeyDown(Keys.E))
-                MoveForward(distance);
-            if (Game.KeyboardState.IsKeyDown(Keys.D))
-                MoveForward(-distance);
-            if (Game.KeyboardState.IsKeyDown(Keys.S))
-                MoveRight(-distance);
-            if (Game.KeyboardState.IsKeyDown(Keys.F))
-                MoveRight(distance);
-            if (Game.KeyboardState.IsKeyDown(Keys.A))
-                MoveUp(distance);
-            if (Game.KeyboardState.IsKeyDown(Keys.Z))
-                MoveUp(-distance);
-
-            WorldMatrix = WorldMatrix * Matrix.CreateTranslation(Position);
-            ViewMatrix = Matrix.Invert(WorldMatrix);
+            this.WorldMatrix = world;
+            this.ViewMatrix = view;
         }
     }
 }
