@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Matrix = BEPUutilities.Matrix;
 using Vector3 = BEPUutilities.Vector3;
 using MathHelper = BEPUutilities.MathHelper;
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace The_Great_Space_Race.Objects
@@ -16,6 +17,7 @@ namespace The_Great_Space_Race.Objects
         public string Name { get; set; }
         public Camera Camera { get; set; }
         public EntityModel em { get; set; }
+        public SoundEffect mainEngine;
         public Vector3 Position { get; set; }
         public Matrix WorldMatrix { get; private set; }
         public Matrix ViewMatrix { get; private set; }
@@ -45,6 +47,7 @@ namespace The_Great_Space_Race.Objects
 
         float yaw;
         float pitch;
+        float dt;
 
 
         public Ship(Game1 game) : base(game)

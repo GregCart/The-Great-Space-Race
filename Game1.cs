@@ -61,7 +61,7 @@ namespace The_Great_Space_Race
             Services.AddService(typeof(SpriteBatch), _spriteBatch);
 
 
-            LoadTestCube();
+            //LoadTestCube();
         }
 
         protected override void Update(GameTime gameTime)
