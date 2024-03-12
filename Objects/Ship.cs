@@ -57,8 +57,11 @@ namespace The_Great_Space_Race.Objects
 
         public override void Initialize()
         {
-            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)",this.WorldMatrix, this.Game);
+            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)",this.WorldMatrix, .5f, this.Game);
             Camera = new Camera(Game, Position - new Vector3(-1, -2, 0), 5);
+
+            Game.Components.Add(em);
+            Game.Components.Add(Camera);
         }
 
         public void speedUp()
@@ -112,6 +115,10 @@ namespace The_Great_Space_Race.Objects
 
             WorldMatrix = WorldMatrix * Matrix.CreateTranslation(Position);
             ViewMatrix = Matrix.Invert(WorldMatrix);
+
+            Camera.Update(WorldMatrix, ViewMatrix);
+
+            base.Update(gameTime);
         }
 
         public void OnCompleted()

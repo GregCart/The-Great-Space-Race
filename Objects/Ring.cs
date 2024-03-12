@@ -26,7 +26,7 @@ namespace Objects
 
             Observers = new List<IObserver<ModelCollision>>();
 
-            em = new EntityModel("RingLampV3_FullRing_100_Halo", new Matrix().toBEPU(), this.Game);
+            em = new EntityModel("RingLampV3_FullRing_100_Halo", new Matrix().toBEPU(), .2f, this.Game);
 
             base.Initialize();
 

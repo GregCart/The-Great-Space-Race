@@ -5,6 +5,7 @@ using Objects;
 using BEPUutilities;
 using Microsoft.Xna.Framework;
 using Matrix = BEPUutilities.Matrix;
+using System.Net.NetworkInformation;
 
 namespace The_Great_Space_Race.Objects
 {
@@ -20,6 +21,7 @@ namespace The_Great_Space_Race.Objects
         /// </summary>
         public Matrix Transform;
         Matrix[] boneTransforms;
+        public float Scale;
 
         public string modelPath;
 
@@ -31,11 +33,12 @@ namespace The_Great_Space_Race.Objects
         /// <param name="model">Graphical representation to use for the entity.</param>
         /// <param name="transform">Base transformation to apply to the model before moving to the entity.</param>
         /// <param name="game">Game to which this component will belong.</param>
-        public EntityModel(string modelPath, Matrix transform, Game game)
+        public EntityModel(string modelPath, Matrix transform, float scale, Game game)
             : base(game)
         {
             this.modelPath = modelPath;
             this.Transform = transform;
+            this.Scale = scale;
         }
 
         public EntityModel(Entity entity, Model model, Matrix transform, Game game)
@@ -51,6 +54,10 @@ namespace The_Great_Space_Race.Objects
             if (this.model ==  null)
             {
                 this.model = Game.Content.Load<Model>("Models/" + modelPath);
+            }
+            if (this.entity == null)
+            {
+                this.entity = new Entity(model.)
             }
 
             //Collect any bone transformations in the model itself.
@@ -87,7 +94,10 @@ namespace The_Great_Space_Race.Objects
             {
                 foreach (BasicEffect effect in mesh.Effects)
                 {
-                    effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA();
+                    effect.EnableDefaultLighting();
+
+                    //                              POSITION                        TRANSLATION             SCALE
+                    effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(Scale);
                     effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix.toXNA();
                     effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix.toXNA();
                 }

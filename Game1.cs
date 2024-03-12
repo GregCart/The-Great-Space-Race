@@ -113,8 +113,8 @@ namespace The_Great_Space_Race
                     effect.View = Matrix.CreateLookAt((new Vector3(-10, -10, -10)).toXNA(),
                         Vector3.Zero.toXNA(), Vector3.Up.toXNA());
                     effect.Projection = Matrix.CreatePerspectiveFieldOfView(
-                    MathHelper.ToRadians(45.0f), 16f/9f,
-                    1.0f, 10000.0f);
+                        MathHelper.ToRadians(45.0f), 16f/9f,
+                        1.0f, 10000.0f);
                 }
                 // Draw the mesh, using the effects set above.
                 mesh.Draw();
