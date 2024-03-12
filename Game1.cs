@@ -61,7 +61,7 @@ namespace The_Great_Space_Race
             Services.AddService(typeof(SpriteBatch), _spriteBatch);
 
 
-            //LoadTestCube();
+            LoadTestCube();
         }
 
         protected override void Update(GameTime gameTime)
@@ -93,6 +93,33 @@ namespace The_Great_Space_Race
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            // Copy any parent transforms.
+            Matrix[] transforms = new Matrix[ring.Bones.Count];
+            ring.CopyAbsoluteBoneTransformsTo(transforms);
+            // Draw the model. A model can have multiple meshes, so loop.
+            foreach (ModelMesh mesh in ring.Meshes)
+            {
+                // This is where the mesh orientation is set, as well
+                // as our camera and projection.
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();
+                    //WORLD TRANSFORM
+                    effect.World = transforms[mesh.ParentBone.Index]
+                        * Matrix.CreateTranslation(new (0.0f, 0.0f, 0.0f))
+                        * Matrix.CreateScale(.02f);
+                    //camera position, scale, rotation
+                    effect.View = Matrix.CreateLookAt((new Vector3(-10, -10, -10)).toXNA(),
+                        Vector3.Zero.toXNA(), Vector3.Up.toXNA());
+                    effect.Projection = Matrix.CreatePerspectiveFieldOfView(
+                    MathHelper.ToRadians(45.0f), 16f/9f,
+                    1.0f, 10000.0f);
+                }
+                // Draw the mesh, using the effects set above.
+                mesh.Draw();
+            }
+            base.Draw(gameTime);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();

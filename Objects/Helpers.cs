@@ -5,6 +5,10 @@ namespace Objects
 {
     public static class Helpers
     {
+        public static Microsoft.Xna.Framework.Vector3 toXNA(this BEPUutilities.Vector3 vec)
+        {
+            return new Microsoft.Xna.Framework.Vector3(vec.X, vec.Y, vec.Z);
+        }
         public static BEPUutilities.Matrix toBEPU(this Microsoft.Xna.Framework.Matrix mat) 
         {
             BEPUutilities.Matrix ret = new BEPUutilities.Matrix();
