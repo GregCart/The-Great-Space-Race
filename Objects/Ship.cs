@@ -52,7 +52,9 @@ namespace The_Great_Space_Race.Objects
 
         public Ship(Game1 game) : base(game)
         {
-
+            WorldMatrix = Matrix.Identity;
+            ViewMatrix = Matrix.Identity;
+            Position = WorldMatrix.Translation;
         }
 
         public override void Initialize()

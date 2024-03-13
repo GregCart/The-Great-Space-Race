@@ -23,4 +23,14 @@ namespace Objects
         Model_Collision,
         num_types_event_type
     }
+
+    //from https://gamedev.stackexchange.com/questions/109516/xna-get-model-height-in-location
+    public class CollisionTriangle
+    {
+        public Microsoft.Xna.Framework.Vector3[] v;
+        public CollisionTriangle()
+        {
+            v = new Microsoft.Xna.Framework.Vector3[3];
+        }
+    }
 }

@@ -2,12 +2,17 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Objects;
-using BEPUutilities;
 using Microsoft.Xna.Framework;
-using Matrix = BEPUutilities.Matrix;
-using System.Net.NetworkInformation;
+using BEPUphysics.Entities.Prefabs;
+using System.Collections.Generic;
 
-namespace The_Great_Space_Race.Objects
+using Matrix = BEPUutilities.Matrix;
+using Vector3 = BEPUutilities.Vector3;
+
+using static Objects.Helpers;
+
+
+namespace Objects
 {
     public class EntityModel : DrawableGameComponent
     {
@@ -22,8 +27,11 @@ namespace The_Great_Space_Race.Objects
         public Matrix Transform;
         Matrix[] boneTransforms;
         public float Scale;
-
         public string modelPath;
+
+        private List<CollisionTriangle> triangles;
+        private Microsoft.Xna.Framework.Vector3 min;
+        private Microsoft.Xna.Framework.Vector3 max;
 
 
         /// <summary>
@@ -49,16 +57,40 @@ namespace The_Great_Space_Race.Objects
             this.Transform = transform;
         }
 
+        public override void Initialize()
+        {
+            this.triangles = new List<CollisionTriangle>();
+
+            base.Initialize();
+        }
+
         protected override void LoadContent()
         {
-            if (this.model ==  null)
+            if (this.model == null)
             {
                 this.model = Game.Content.Load<Model>("Models/" + modelPath);
             }
             if (this.entity == null)
             {
-                this.entity = new Entity(model.)
+                List<CollisionTriangle> tmp;
+                Microsoft.Xna.Framework.Vector3 tmpMin;
+                Microsoft.Xna.Framework.Vector3 tmpMax;
+                foreach (ModelMesh mesh in this.model.Meshes)
+                {
+
+                    Matrix transform = CreateTransform(mesh.ParentBone).toBEPU();
+                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                    {
+                        (tmp, tmpMax, tmpMin) = ExtractMeshPart(meshPart, transform.toXNA());
+                        triangles.AddRange(tmp);
+                        tmpMax.UpdateMinMax(ref max, ref min);
+                        tmpMin.UpdateMinMax(ref max, ref min);
+                    }
+                }
+
+                this.entity = new Cylinder(this.Transform.Translation, this.max.Y - this.min.Y, (this.max.X - this.min.X) / 2f);
             }
+            
 
             //Collect any bone transformations in the model itself.
             //The default cube model doesn't have any, but this allows the EntityModel to work with more complicated shapes.
