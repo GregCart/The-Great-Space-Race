@@ -150,8 +150,8 @@ namespace Objects
                     effect.EnableDefaultLighting();
 
                     //                              POSITION                        TRANSLATION             SCALE
-                    //effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(Scale);
-                    effect.World = worldMatrix.toXNA();
+                    effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(Scale);
+                    //effect.World = worldMatrix.toXNA();
                     // camera effects
                     effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix;
                     effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;

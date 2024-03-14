@@ -66,10 +66,10 @@ namespace Objects
             {
                 AspectRatio = ((GraphicsDeviceManager)Game.Services.GetService(typeof(GraphicsDeviceManager))).GraphicsDevice.Viewport.AspectRatio;
             }
-            world.Translation = world.Translation + new Vector3(0.0f, 1.0f, -1.0f);
+            Position = world.Translation + new Vector3(0.0f, .35f, -1.8f);
 
             this.WorldMatrix = world;
-            this.ViewMatrix = Matrix.CreateLookAt(Position, world.Forward, world.Up);
+            this.ViewMatrix = Matrix.CreateLookAt(Position, world.Forward * world.Translation + new Vector3(0.0f, .75f, .5f), world.Up);
             this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45f), AspectRatio, 1f, 10000f);
         }
     }

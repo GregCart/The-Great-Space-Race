@@ -15,7 +15,7 @@ namespace The_Great_Space_Race.Objects
         public EntityModel em { get; set; }
         public SoundEffect mainEngine;
         public Matrix WorldMatrix { get; set; }
-        /*public float Yaw
+        public float Yaw
         {
             get
             {
@@ -36,21 +36,24 @@ namespace The_Great_Space_Race.Objects
             {
                 pitch = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
             }
-        }*/
+        }
         public float Speed { get; set; }
 
         float dt;
+        float yaw = MathHelper.ToRadians(0);
+        float pitch = MathHelper.ToRadians(0);
+        float roll = MathHelper.ToRadians(0);
 
 
         public Ship(Game1 game) : base(game)
         {
-            WorldMatrix = Matrix.Identity;
+            WorldMatrix = Matrix.Identity * Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
         }
 
         public override void Initialize()
         {
-            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .5f, this.Game);
-            Camera = new Camera(Game, WorldMatrix.Translation - new Vector3(-1, -2, 0), 5);
+            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .2f, this.Game);
+            Camera = new Camera(Game, WorldMatrix.Translation, 5);
 
             Game.Components.Add(em);
             Game.Components.Add(Camera);
