@@ -1,10 +1,16 @@
 ﻿using BEPUphysics.Entities;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
-using Objects;
 using Microsoft.Xna.Framework;
 using BEPUphysics.Entities.Prefabs;
 using System.Collections.Generic;
+using The_Great_Space_Race.Objects;
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.CollisionTests;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
+using System;
+using BEPUphysics.CollisionRuleManagement;
 
 using Matrix = BEPUutilities.Matrix;
 using Vector3 = BEPUutilities.Vector3;
@@ -26,7 +32,7 @@ namespace Objects
         /// </summary>
         public Matrix Transform;
         Matrix[] boneTransforms;
-        public float Scale;
+        public float Scale = 1.0f;
         public string modelPath;
 
         private List<CollisionTriangle> triangles;
@@ -77,7 +83,6 @@ namespace Objects
                 Microsoft.Xna.Framework.Vector3 tmpMax;
                 foreach (ModelMesh mesh in this.model.Meshes)
                 {
-
                     Matrix transform = CreateTransform(mesh.ParentBone).toBEPU();
                     foreach (ModelMeshPart meshPart in mesh.MeshParts)
                     {
@@ -89,6 +94,15 @@ namespace Objects
                 }
 
                 this.entity = new Cylinder(this.Transform.Translation, this.max.Y - this.min.Y, (this.max.X - this.min.X) / 2f);
+                //From Addison
+                //Disable solver to make box generate collision events but no affect physics(like a trigger in unity)
+                //More about collision rules: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionRules.md
+                this.entity.CollisionInformation.CollisionRules.Personal =
+                CollisionRule.NoSolver;
+                this.entity.Material.Bounciness = 1;
+                //Add collision start listener
+                //More about collision events: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionEvents.md
+                this.entity.CollisionInformation.Events.ContactCreated += CollisionHappened;
             }
             
 
@@ -108,7 +122,13 @@ namespace Objects
 
         public void UpdateContent()
         {
+            RaceManager.Instance.activeTrack.space.Add(entity);
             this.LoadContent();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
@@ -120,8 +140,9 @@ namespace Objects
             //in the list to familiarize yourself with it.
             var worldMatrix = Transform * entity.WorldTransform;
 
-
-            model.CopyAbsoluteBoneTransformsTo(boneTransforms.toXNA());
+            Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[this.model.Bones.Count];
+            model.CopyAbsoluteBoneTransformsTo(transforms);
+            boneTransforms = transforms.toBEPU();
             foreach (ModelMesh mesh in model.Meshes)
             {
                 foreach (BasicEffect effect in mesh.Effects)
@@ -129,13 +150,21 @@ namespace Objects
                     effect.EnableDefaultLighting();
 
                     //                              POSITION                        TRANSLATION             SCALE
-                    effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(Scale);
-                    effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix.toXNA();
-                    effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix.toXNA();
+                    //effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * worldMatrix.toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(Scale);
+                    effect.World = worldMatrix.toXNA();
+                    // camera effects
+                    effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix;
+                    effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
                 }
                 mesh.Draw();
             }
             base.Draw(gameTime);
+        }
+
+        //Handle collision events from addison
+        void CollisionHappened(EntityCollidable sender, Collidable other, CollidablePairHandler pair, ContactData contact)
+        {
+            Console.WriteLine("Collision detected.");
         }
     }
 }

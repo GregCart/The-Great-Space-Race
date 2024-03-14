@@ -31,6 +31,7 @@ namespace Objects
         public InputManager(Game1 game) : base(game)
         {
             instance = this;
+            Observers = new List<IObserver<InputEvent>>();
         }
 
         public static void Reset()
@@ -43,7 +44,7 @@ namespace Objects
             count = true;
         }
 
-        public static void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             oms = ms;
             previousKeyState = currentKeyState;

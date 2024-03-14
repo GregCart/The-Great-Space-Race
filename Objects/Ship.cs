@@ -1,12 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using BEPUutilities;
 using Microsoft.Xna.Framework.Input;
 using Objects;
 using System;
 using System.Diagnostics;
-using Matrix = BEPUutilities.Matrix;
-using Vector3 = BEPUutilities.Vector3;
-using MathHelper = BEPUutilities.MathHelper;
 using Microsoft.Xna.Framework.Audio;
 
 
@@ -18,10 +14,8 @@ namespace The_Great_Space_Race.Objects
         public Camera Camera { get; set; }
         public EntityModel em { get; set; }
         public SoundEffect mainEngine;
-        public Vector3 Position { get; set; }
-        public Matrix WorldMatrix { get; private set; }
-        public Matrix ViewMatrix { get; private set; }
-        public float Yaw
+        public Matrix WorldMatrix { get; set; }
+        /*public float Yaw
         {
             get
             {
@@ -42,28 +36,25 @@ namespace The_Great_Space_Race.Objects
             {
                 pitch = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
             }
-        }
+        }*/
         public float Speed { get; set; }
 
-        float yaw;
-        float pitch;
         float dt;
 
 
         public Ship(Game1 game) : base(game)
         {
             WorldMatrix = Matrix.Identity;
-            ViewMatrix = Matrix.Identity;
-            Position = WorldMatrix.Translation;
         }
 
         public override void Initialize()
         {
-            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)",this.WorldMatrix, .5f, this.Game);
-            Camera = new Camera(Game, Position - new Vector3(-1, -2, 0), 5);
+            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .5f, this.Game);
+            Camera = new Camera(Game, WorldMatrix.Translation - new Vector3(-1, -2, 0), 5);
 
             Game.Components.Add(em);
             Game.Components.Add(Camera);
+            Game.Services.AddService(Camera);
         }
 
         public void speedUp()
@@ -73,7 +64,7 @@ namespace The_Great_Space_Race.Objects
 
         public void slowDown()
         {
-
+            
         }
 
         public void moveLeft() 
@@ -110,15 +101,13 @@ namespace The_Great_Space_Race.Objects
 
         public override void Update(GameTime gameTime)
         {
-            WorldMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, Pitch) * Matrix.CreateFromAxisAngle(Vector3.Up, Yaw);
+            //WorldMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, Pitch) * Matrix.CreateFromAxisAngle(Vector3.Up, Yaw);
+            WorldMatrix = em.entity.WorldTransform.toXNA();
 
 
             dt = (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
 
-            WorldMatrix = WorldMatrix * Matrix.CreateTranslation(Position);
-            ViewMatrix = Matrix.Invert(WorldMatrix);
-
-            Camera.Update(WorldMatrix, ViewMatrix);
+            Camera.Update(WorldMatrix);
 
             base.Update(gameTime);
         }

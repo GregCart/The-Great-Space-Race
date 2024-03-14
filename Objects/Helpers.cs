@@ -11,6 +11,10 @@ namespace Objects
         {
             return new Microsoft.Xna.Framework.Vector3(vec.X, vec.Y, vec.Z);
         }
+        public static BEPUutilities.Vector3 toBEPU(this Microsoft.Xna.Framework.Vector3 vec)
+        {
+            return new BEPUutilities.Vector3(vec.X, vec.Y, vec.Z);
+        }
         public static BEPUutilities.Matrix toBEPU(this Microsoft.Xna.Framework.Matrix mat)
         {
             BEPUutilities.Matrix ret = new BEPUutilities.Matrix();
@@ -66,6 +70,18 @@ namespace Objects
             foreach (BEPUutilities.Matrix mat in mats)
             {
                 ret.Add(mat.toXNA());
+            }
+
+            return ret.ToArray();
+        }
+
+        public static BEPUutilities.Matrix[] toBEPU(this Microsoft.Xna.Framework.Matrix[] mats)
+        {
+            List<BEPUutilities.Matrix> ret = new List<BEPUutilities.Matrix>();
+
+            foreach (Microsoft.Xna.Framework.Matrix mat in mats)
+            {
+                ret.Add(mat.toBEPU());
             }
 
             return ret.ToArray();
@@ -131,8 +147,8 @@ namespace Objects
                             meshPart.NumVertices,
                             declaration.VertexStride);
 
-            short[] indices = new short[meshPart.PrimitiveCount * 3];
-            meshPart.IndexBuffer.GetData<short>(meshPart.StartIndex * 2, indices, 0, meshPart.PrimitiveCount * 3);
+            ushort[] indices = new ushort[meshPart.PrimitiveCount * 3];
+            meshPart.IndexBuffer.GetData<ushort>(meshPart.StartIndex * 2, indices, 0, meshPart.PrimitiveCount * 3);
 
             for (int i = 0; i != allVertex.Length; ++i)
             {

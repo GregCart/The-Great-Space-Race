@@ -6,7 +6,7 @@ using The_Great_Space_Race;
 
 namespace Objects
 {
-    public class RaceManager : GameComponent, IObserver<ModelCollision>
+    public class RaceManager : GameComponent, IObserver<IModelCollision>
     {
         private static RaceManager instance;
 
@@ -17,7 +17,10 @@ namespace Objects
                 return instance;
             }
         }
-        public static Course activeTrack;
+        
+        public Course activeTrack;
+
+        private bool trackLoaded = false;
 
         public RaceManager(Game1 game): base(game)
         {
@@ -27,6 +30,16 @@ namespace Objects
         public override void Initialize()
         {
             base.Initialize();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (activeTrack != null && trackLoaded == false)
+            {
+                activeTrack.LoadContent();
+                trackLoaded = true;
+            }
+            base.Update(gameTime);
         }
 
         public void OnCompleted()
@@ -39,7 +52,7 @@ namespace Objects
             throw new NotImplementedException();
         }
 
-        public void OnNext(ModelCollision value)
+        public void OnNext(IModelCollision value)
         {
             throw new NotImplementedException();
         }

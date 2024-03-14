@@ -9,7 +9,7 @@ using The_Great_Space_Race.Objects;
 
 namespace Objects
 {
-    public class Course : GameComponent, IObserver<ModelCollision>, IObservable<bool>
+    public class Course : GameComponent, IObserver<IModelCollision>, IObservable<bool>
     {
         public string Name { get; set; }
         public Space space;
@@ -31,7 +31,11 @@ namespace Objects
 
         public override void Initialize()
         {
-            space = new Space();
+            if (space == null)
+            {
+                space = new Space();
+
+            }
             
             foreach(Ring r in Rings)
             {
@@ -40,13 +44,8 @@ namespace Objects
 
             base.Initialize();
 
-            /*foreach (Ring r in Rings)
-            {
-                space.Add(r.shape);
-            }
-
             ship = Game.Components[0] as Ship;
-            this.space.Add(ship.EntityModel.entity);*/
+            this.space.Add(ship.em.entity);
         }
 
         public void Initialize(bool isOrdered, List<Ring> rings) 
@@ -55,6 +54,15 @@ namespace Objects
             this.Rings = rings.ToArray();
 
             this.Initialize();
+        }
+
+        public void LoadContent()
+        {
+            foreach (Ring r in Rings)
+            {
+                r.Initialize();
+                space.Add(r.em.entity);
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -74,7 +82,7 @@ namespace Objects
             Debug.WriteLine(error);
         }
 
-        public void OnNext(ModelCollision value)
+        public void OnNext(IModelCollision value)
         {
             throw new NotImplementedException();
         }

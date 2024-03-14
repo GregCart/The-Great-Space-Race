@@ -6,14 +6,14 @@ using The_Great_Space_Race.Objects;
 
 namespace Objects
 {
-    public class Ring : GameComponent, IObservable<ModelCollision>
+    public class Ring : GameComponent, IObservable<IModelCollision>
     {
         public bool hasPassed;
         public RingType type;
         public EntityModel em;
 
 
-        private List<IObserver<ModelCollision>> Observers;
+        private List<IObserver<IModelCollision>> Observers;
 
 
         public Ring(Game1 game) : base(game)
@@ -24,13 +24,13 @@ namespace Objects
         {
             hasPassed = false;
 
-            Observers = new List<IObserver<ModelCollision>>();
+            Observers = new List<IObserver<IModelCollision>>();
 
             em = new EntityModel("RingLampV3_FullRing_100_Halo", new Matrix().toBEPU(), .2f, this.Game);
 
-            base.Initialize();
-
             Game.Components.Add(em);
+
+            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
@@ -43,7 +43,7 @@ namespace Objects
             this.type = type;
         }
 
-        public IDisposable Subscribe(IObserver<ModelCollision> observer)
+        public IDisposable Subscribe(IObserver<IModelCollision> observer)
         {
             Observers.Add(observer);
 

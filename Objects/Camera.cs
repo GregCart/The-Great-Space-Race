@@ -1,10 +1,6 @@
-﻿using BEPUutilities;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using The_Great_Space_Race;
-using MathHelper = BEPUutilities.MathHelper;
-using Matrix = BEPUutilities.Matrix;
-using Vector3 = BEPUutilities.Vector3;
 
 namespace Objects
 {
@@ -18,36 +14,6 @@ namespace Objects
         /// Gets or sets the position of the camera.
         /// </summary>
         public Vector3 Position { get; set; }
-        float yaw;
-        float pitch;
-        /// <summary>
-        /// Gets or sets the yaw rotation of the camera.
-        /// </summary>
-        public float Yaw
-        {
-            get
-            {
-                return yaw;
-            }
-            set
-            {
-                yaw = MathHelper.WrapAngle(value);
-            }
-        }
-        /// <summary>
-        /// Gets or sets the pitch rotation of the camera.
-        /// </summary>
-        public float Pitch
-        {
-            get
-            {
-                return pitch;
-            }
-            set
-            {
-                pitch = MathHelper.Clamp(value, -MathHelper.PiOver2, MathHelper.PiOver2);
-            }
-        }
 
         /// <summary>
         /// Gets or sets the speed at which the camera moves.
@@ -68,10 +34,7 @@ namespace Objects
         /// </summary>
         public Matrix WorldMatrix { get; private set; }
 
-        /// <summary>
-        /// Gets the game owning the camera.
-        /// </summary>
-        public Game Game { get; private set; }
+        public float AspectRatio;
 
         /// <summary>
         /// Constructs a new camera.
@@ -81,25 +44,33 @@ namespace Objects
         /// <param name="speed">Initial movement speed of the camera.</param>
         public Camera(Game game, Vector3 position, float speed): base(game)
         {
-            Game = game;
             Position = position;
             Speed = speed;
-            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfViewRH(MathHelper.PiOver4, 4f / 3f, .1f, 10000.0f);
+            //ProjectionMatrix = Matrix.CreatePerspectiveFieldOfViewRH(MathHelper.PiOver4, 4f / 3f, .1f, 10000.0f);
             Mouse.SetPosition(200, 200);
         }
 
-        
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
+            
 
         /// <summary>
         /// Updates the camera's view matrix.
         /// </summary>
         /// <param name="dt">Timestep duration.</param>
-        public void Update(Matrix world, Matrix view)
+        public void Update(Matrix world)
         {
+            if (AspectRatio == 0)
+            {
+                AspectRatio = ((GraphicsDeviceManager)Game.Services.GetService(typeof(GraphicsDeviceManager))).GraphicsDevice.Viewport.AspectRatio;
+            }
             world.Translation = world.Translation + new Vector3(0.0f, 1.0f, -1.0f);
 
             this.WorldMatrix = world;
-            this.ViewMatrix = view;
+            this.ViewMatrix = Matrix.CreateLookAt(Position, world.Forward, world.Up);
+            this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45f), AspectRatio, 1f, 10000f);
         }
     }
 }

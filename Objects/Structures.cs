@@ -4,9 +4,14 @@ using The_Great_Space_Race;
 
 namespace Objects
 {
-    public struct ModelCollision
+    public interface IModelCollision
     {
         
+    }
+
+    public struct RingPassed : IModelCollision
+    {
+        public Ring ring;
     }
 
     public struct InputEvent
