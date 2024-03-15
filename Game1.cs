@@ -134,7 +134,7 @@ namespace The_Great_Space_Race
 
         void LoadTestCube()
         {
-            ring = Content.Load<Model>("Models/RingLampV3_FullRing_100_Halo");
+            //ring = Content.Load<Model>("Models/RingLampV3_FullRing_100_Halo");
 
             //testSpace = new Space();
             //testSpace.ForceUpdater.Gravity = new Vector3(0, -9.81f, 0);

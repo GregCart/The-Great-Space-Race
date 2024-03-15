@@ -51,3 +51,9 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/RingLampV3_FullRing_100_Halo.obj
 
+#begin Sounds/CartoonCarSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/CartoonCarSound.mp3
+

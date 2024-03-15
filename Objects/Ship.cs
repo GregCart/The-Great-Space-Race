@@ -43,26 +43,35 @@ namespace The_Great_Space_Race.Objects
         float yaw = MathHelper.ToRadians(0);
         float pitch = MathHelper.ToRadians(0);
         float roll = MathHelper.ToRadians(0);
-
+        float playTime = 100000.0f;
 
         public Ship(Game1 game) : base(game)
         {
             WorldMatrix = Matrix.Identity * Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
+            Speed = 5;
         }
 
         public override void Initialize()
         {
             em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .2f, this.Game);
+            mainEngine = Game.Content.Load<SoundEffect>("Sounds/CartoonCarSound");
             Camera = new Camera(Game, WorldMatrix.Translation, 5);
 
             Game.Components.Add(em);
             Game.Components.Add(Camera);
             Game.Services.AddService(Camera);
+
+            ((InputManager)Game.Services.GetService(typeof(InputManager))).Subscribe(this);
         }
 
         public void speedUp()
         {
-            
+            this.em.entity.ApplyImpulse(WorldMatrix.Translation.toBEPU(), new BEPUutilities.Vector3(0, 0, Speed));
+            if (playTime > mainEngine.Duration.TotalSeconds)
+            {
+                mainEngine.Play(.5f, 0, 0);
+                playTime = 0.0f;
+            }
         }
 
         public void slowDown()
@@ -106,7 +115,9 @@ namespace The_Great_Space_Race.Objects
         {
             //WorldMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, Pitch) * Matrix.CreateFromAxisAngle(Vector3.Up, Yaw);
             WorldMatrix = em.entity.WorldTransform.toXNA();
+            Debug.WriteLine(WorldMatrix.ToString());
 
+            playTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             dt = (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -129,6 +140,7 @@ namespace The_Great_Space_Race.Objects
         {
             if (value.type == EventType.Key_Down)
             {
+                
                 switch (value.key)
                 {
                     case Keys.W:

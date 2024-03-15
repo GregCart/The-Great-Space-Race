@@ -104,7 +104,8 @@ namespace Objects
                 //More about collision events: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionEvents.md
                 this.entity.CollisionInformation.Events.ContactCreated += CollisionHappened;
             }
-            
+            this.entity.BecomeDynamic(1);
+
 
             //Collect any bone transformations in the model itself.
             //The default cube model doesn't have any, but this allows the EntityModel to work with more complicated shapes.
