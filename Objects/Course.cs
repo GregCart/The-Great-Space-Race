@@ -34,12 +34,6 @@ namespace Objects
             if (space == null)
             {
                 space = new Space();
-
-            }
-            
-            foreach(Ring r in Rings)
-            {
-                Game.Components.Add(r);
             }
 
             base.Initialize();
@@ -48,12 +42,15 @@ namespace Objects
             this.space.Add(ship.em.entity);
         }
 
-        public void Initialize(bool isOrdered, List<Ring> rings) 
+        public void UpdateContent(bool isOrdered, List<Ring> rings) 
         {
             this.IsOrdered = isOrdered;
             this.Rings = rings.ToArray();
 
-            this.Initialize();
+            foreach (Ring r in Rings)
+            {
+                Game.Components.Add(r);
+            }
         }
 
         public void LoadContent()

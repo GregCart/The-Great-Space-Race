@@ -121,12 +121,6 @@ namespace Objects
             base.LoadContent();
         }
 
-        public void UpdateContent()
-        {
-            RaceManager.Instance.activeTrack.space.Add(entity);
-            this.LoadContent();
-        }
-
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

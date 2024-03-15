@@ -66,10 +66,12 @@ namespace The_Great_Space_Race.Objects
 
         public void speedUp()
         {
-            this.em.entity.ApplyImpulse(WorldMatrix.Translation.toBEPU(), new BEPUutilities.Vector3(0, 0, Speed));
+            var tmp = this.em.entity.Orientation;
+            if (tmp.Length() != 0) tmp.Normalize();
+            this.em.entity.LinearVelocity += (tmp * Speed).toBEPU();
             if (playTime > mainEngine.Duration.TotalSeconds)
             {
-                mainEngine.Play(.5f, 0, 0);
+                mainEngine.Play(.5f, 0f, 0f);
                 playTime = 0.0f;
             }
         }

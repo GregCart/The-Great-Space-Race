@@ -36,9 +36,11 @@ namespace Objects
         {
             if (activeTrack != null && trackLoaded == false)
             {
+                Game.Components.Add(activeTrack);
                 activeTrack.LoadContent();
                 trackLoaded = true;
             }
+
             base.Update(gameTime);
         }
 

@@ -162,7 +162,7 @@ namespace The_Great_Space_Race
 
             Ring r = new(this);
             Course c = new(this);
-            c.Initialize(false, new List<Ring> { r });
+            c.UpdateContent(false, new List<Ring> { r });
             RaceManager.Instance.activeTrack = c;
         }
     }
