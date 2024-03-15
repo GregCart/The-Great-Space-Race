@@ -12,8 +12,8 @@ namespace Objects
         public RingType type;
         public EntityModel em;
 
-
         private List<IObserver<IModelCollision>> Observers;
+        private Matrix WorldTransform;
 
 
         public Ring(Game1 game) : base(game)
@@ -38,7 +38,7 @@ namespace Objects
             base.Update(gameTime);
         }
 
-        public void SetUp(RingType type) 
+        public void SetUp(RingType type, Vector3 location, Vector3 rotation) 
         {
             this.type = type;
         }

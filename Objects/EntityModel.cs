@@ -133,7 +133,7 @@ namespace Objects
             //and translation of the entity combined.
             //There are a variety of properties available in the entity, try looking around
             //in the list to familiarize yourself with it.
-            var worldMatrix = Transform * entity.WorldTransform;
+            var worldMatrix = entity.WorldTransform;
 
             Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[this.model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);

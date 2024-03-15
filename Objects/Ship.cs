@@ -10,6 +10,8 @@ namespace The_Great_Space_Race.Objects
 {
     public class Ship : GameComponent, IObserver<InputEvent>
     {
+        private const float MAX_SPEED = 10f;
+
         public string Name { get; set; }
         public Camera Camera { get; set; }
         public EntityModel em { get; set; }
@@ -48,7 +50,7 @@ namespace The_Great_Space_Race.Objects
         public Ship(Game1 game) : base(game)
         {
             WorldMatrix = Matrix.Identity * Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
-            Speed = 5;
+            Speed = .15f;
         }
 
         public override void Initialize()
@@ -66,9 +68,8 @@ namespace The_Great_Space_Race.Objects
 
         public void speedUp()
         {
-            var tmp = this.em.entity.Orientation;
-            if (tmp.Length() != 0) tmp.Normalize();
-            this.em.entity.LinearVelocity += (tmp * Speed).toBEPU();
+            this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y, 
+                                                MathF.Max(this.em.entity.LinearVelocity.Z - Speed, -MAX_SPEED)).toBEPU();
             if (playTime > mainEngine.Duration.TotalSeconds)
             {
                 mainEngine.Play(.5f, 0f, 0f);
@@ -78,22 +79,31 @@ namespace The_Great_Space_Race.Objects
 
         public void slowDown()
         {
-            
+            this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y,
+                                                MathF.Min(this.em.entity.LinearVelocity.Z + Speed, MAX_SPEED)).toBEPU();
+            if (playTime > mainEngine.Duration.TotalSeconds)
+            {
+                mainEngine.Play(.5f, 0f, 0f);
+                playTime = 0.0f;
+            }
         }
 
         public void moveLeft() 
-        { 
-        
+        {
+            this.em.entity.LinearVelocity = new Vector3(MathF.Min(this.em.entity.LinearVelocity.X - Speed, -MAX_SPEED), 
+                                                this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
         }
 
         public void moveRight()
         {
-
+            this.em.entity.LinearVelocity = new Vector3(MathF.Max(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
+                                                this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
         }
 
         public void turnLeft()
         {
-
+            this.em.entity.AngularVelocity = new BEPUutilities.Vector3(MathF.Min(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
+                                                this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z);
         }
 
         public void turnRight()
