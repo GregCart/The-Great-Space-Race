@@ -12,7 +12,7 @@ namespace Objects
         public RingType type;
         public EntityModel em;
 
-        private List<IObserver<ModelCollision>> Observers;
+        private List<IObserver<RingPassed>> Observers;
         private Matrix WorldTransform;
 
 
@@ -24,7 +24,7 @@ namespace Objects
         {
             hasPassed = false;
 
-            Observers = new List<IObserver<ModelCollision>>();
+            Observers = new List<IObserver<RingPassed>>();
 
             em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .05f, this.Game);
             em.Subscribe(this);
@@ -72,7 +72,7 @@ namespace Objects
             }
 
             this.hasPassed = true;
-            RingPassed pass = value as RingPassed;
+            RingPassed pass = new RingPassed(value);
             pass.ring = this.type;
             foreach (IObserver<RingPassed> observer in Observers)
             {

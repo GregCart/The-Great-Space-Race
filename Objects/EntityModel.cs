@@ -162,7 +162,8 @@ namespace Objects
         void CollisionHappened(EntityCollidable sender, Collidable other, CollidablePairHandler pair, ContactData contact)
         {
             Console.WriteLine("Collision detected.");
-            Observer.OnNext(new ModelCollision { type = EventType.Collision, entity = sender, obj = other, data = contact});
+            if (Observer != null)
+                Observer.OnNext(new ModelCollision { type = EventType.Collision, entity = sender, obj = other, data = contact});
         }
 
         public IDisposable Subscribe(IObserver<ModelCollision> observer)
