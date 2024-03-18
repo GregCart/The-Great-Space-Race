@@ -1,17 +1,24 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using BEPUphysics.BroadPhaseEntries;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System.Runtime.CompilerServices;
 using The_Great_Space_Race;
 
 
 namespace Objects
 {
-    public interface IModelCollision
+    public class ModelCollision
     {
-        
+        public EventType type;
+        public BEPUphysics.BroadPhaseEntries.MobileCollidables.EntityCollidable entity;
+        public Collidable obj;
+        public BEPUphysics.CollisionTests.ContactData data;
     }
 
-    public struct RingPassed : IModelCollision
+    public class RingPassed : ModelCollision
     {
-        public Ring ring;
+        public new EventType type { get; private set; } = EventType.Ring_Passed;
+        public RingType ring;
     }
 
     public struct InputEvent
@@ -25,7 +32,8 @@ namespace Objects
     {
         Mouse_Down,
         Key_Down,
-        Model_Collision,
+        Collision,
+        Ring_Passed,
         num_types_event_type
     }
 

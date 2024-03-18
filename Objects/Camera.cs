@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 using The_Great_Space_Race;
 
 namespace Objects
@@ -69,8 +70,10 @@ namespace Objects
             Position = world.Translation + new Vector3(0.0f, .35f, -1.8f);
 
             this.WorldMatrix = world;
-            this.ViewMatrix = Matrix.CreateLookAt(Position, world.Forward * world.Translation + new Vector3(0.0f, .75f, .5f), world.Up);
-            this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45f), AspectRatio, 1f, 10000f);
+            this.ViewMatrix = Matrix.CreateLookAt(Position, Position + new Vector3(0.0f, 0f, .5f), world.Up);
+            this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(90f), AspectRatio, .1f, 10000f);
+
+            Debug.WriteLine("Camera: " + this.WorldMatrix.ToString());
         }
     }
 }

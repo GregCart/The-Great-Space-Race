@@ -6,13 +6,13 @@ using The_Great_Space_Race.Objects;
 
 namespace Objects
 {
-    public class Ring : GameComponent, IObservable<IModelCollision>
+    public class Ring : GameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
     {
         public bool hasPassed;
         public RingType type;
         public EntityModel em;
 
-        private List<IObserver<IModelCollision>> Observers;
+        private List<IObserver<ModelCollision>> Observers;
         private Matrix WorldTransform;
 
 
@@ -24,9 +24,11 @@ namespace Objects
         {
             hasPassed = false;
 
-            Observers = new List<IObserver<IModelCollision>>();
+            Observers = new List<IObserver<ModelCollision>>();
 
-            em = new EntityModel("RingLampV3_FullRing_100_Halo", new Matrix().toBEPU(), .2f, this.Game);
+            em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .05f, this.Game);
+            em.Subscribe(this);
+            
 
             Game.Components.Add(em);
 
@@ -41,13 +43,42 @@ namespace Objects
         public void SetUp(RingType type, Vector3 location, Vector3 rotation) 
         {
             this.type = type;
+            this.em.entity.WorldTransform *= Matrix.CreateTranslation(location).toBEPU() * Matrix.CreateFromYawPitchRoll(rotation.X, rotation.Y, rotation.Z).toBEPU();
+
         }
 
-        public IDisposable Subscribe(IObserver<IModelCollision> observer)
+        public IDisposable Subscribe(IObserver<RingPassed> observer)
         {
             Observers.Add(observer);
 
             return this;
+        }
+
+        public void OnCompleted()
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void OnError(Exception error)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void OnNext(ModelCollision value)
+        {
+            if (value.type != EventType.Collision)
+            {
+                return;
+            }
+
+            this.hasPassed = true;
+            RingPassed pass = value as RingPassed;
+            pass.ring = this.type;
+            foreach (IObserver<RingPassed> observer in Observers)
+            {
+
+                observer.OnNext(pass);
+            }
         }
     }
 

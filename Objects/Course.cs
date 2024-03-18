@@ -9,13 +9,13 @@ using The_Great_Space_Race.Objects;
 
 namespace Objects
 {
-    public class Course : GameComponent, IObserver<IModelCollision>, IObservable<bool>
+    public class Course : GameComponent, IObserver<ModelCollision>, IObservable<bool>
     {
         public string Name { get; set; }
         public Space space;
         public Ring[] Rings;
         public bool IsOrdered;
-        public int LastEntered;
+        public bool HasFinnished;
 
         private static List<IObserver<bool>> Observers;
 
@@ -25,7 +25,7 @@ namespace Objects
         public Course(Game1 game) : base(game)
         {
             this.IsOrdered = false;
-            this.LastEntered = -1;
+            this.HasFinnished = false;
             
         }
 
@@ -64,7 +64,8 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
-            space.Update();
+            if (!HasFinnished)
+                space.Update();
 
             base.Update(gameTime);
         }
@@ -79,7 +80,7 @@ namespace Objects
             Debug.WriteLine(error);
         }
 
-        public void OnNext(IModelCollision value)
+        public void OnNext(ModelCollision value)
         {
             throw new NotImplementedException();
         }

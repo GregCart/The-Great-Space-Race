@@ -6,7 +6,7 @@ using The_Great_Space_Race;
 
 namespace Objects
 {
-    public class RaceManager : GameComponent, IObserver<IModelCollision>
+    public class RaceManager : DrawableGameComponent, IObserver<RingPassed>
     {
         private static RaceManager instance;
 
@@ -44,6 +44,16 @@ namespace Objects
             base.Update(gameTime);
         }
 
+        public override void Draw(GameTime gameTime)
+        {
+            if (activeTrack.HasFinnished)
+            {
+                
+            }
+
+            base.Draw(gameTime);
+        }
+
         public void OnCompleted()
         {
             throw new NotImplementedException();
@@ -54,9 +64,12 @@ namespace Objects
             throw new NotImplementedException();
         }
 
-        public void OnNext(IModelCollision value)
+        public void OnNext(RingPassed value)
         {
-            throw new NotImplementedException();
+            if (value.ring == RingType.Finnish)
+            {
+                activeTrack.HasFinnished = true;
+            }
         }
     }
 }

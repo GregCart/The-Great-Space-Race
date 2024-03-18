@@ -57,7 +57,7 @@ namespace The_Great_Space_Race.Objects
         {
             em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .2f, this.Game);
             mainEngine = Game.Content.Load<SoundEffect>("Sounds/CartoonCarSound");
-            Camera = new Camera(Game, WorldMatrix.Translation, 5);
+            Camera = new Camera(Game, WorldMatrix.Translation, Speed);
 
             Game.Components.Add(em);
             Game.Components.Add(Camera);
@@ -68,47 +68,58 @@ namespace The_Great_Space_Race.Objects
 
         public void speedUp()
         {
-            this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y, 
-                                                MathF.Max(this.em.entity.LinearVelocity.Z - Speed, -MAX_SPEED)).toBEPU();
-            if (playTime > mainEngine.Duration.TotalSeconds)
+            //this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y, 
+            //                                   MathF.Max(this.em.entity.LinearVelocity.Z - Speed, -MAX_SPEED)).toBEPU();
+            var tmp = new BEPUutilities.Vector3(0f, 0f, Speed);
+            this.em.entity.ApplyLinearImpulse(ref tmp);
+            /*if (playTime > mainEngine.Duration.TotalSeconds)
             {
                 mainEngine.Play(.5f, 0f, 0f);
                 playTime = 0.0f;
-            }
+            }*/
         }
 
         public void slowDown()
         {
-            this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y,
-                                                MathF.Min(this.em.entity.LinearVelocity.Z + Speed, MAX_SPEED)).toBEPU();
-            if (playTime > mainEngine.Duration.TotalSeconds)
+            //this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y,
+            //                                    MathF.Min(this.em.entity.LinearVelocity.Z + Speed, MAX_SPEED)).toBEPU();
+            var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed);
+            this.em.entity.ApplyLinearImpulse(ref tmp);
+            /*if (playTime > mainEngine.Duration.TotalSeconds)
             {
                 mainEngine.Play(.5f, 0f, 0f);
                 playTime = 0.0f;
-            }
+            }*/
         }
 
         public void moveLeft() 
         {
-            this.em.entity.LinearVelocity = new Vector3(MathF.Min(this.em.entity.LinearVelocity.X - Speed, -MAX_SPEED), 
-                                                this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
+            //this.em.entity.LinearVelocity = new Vector3(MathF.Min(this.em.entity.LinearVelocity.X - Speed, -MAX_SPEED), 
+            //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
+            var tmp = new BEPUutilities.Vector3(Speed/3, 0f, 0f);
+            this.em.entity.ApplyLinearImpulse(ref tmp);
         }
 
         public void moveRight()
         {
-            this.em.entity.LinearVelocity = new Vector3(MathF.Max(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
-                                                this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
+            //this.em.entity.LinearVelocity = new Vector3(MathF.Max(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
+            //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
+            var tmp = new BEPUutilities.Vector3(-Speed/3, 0f, 0f);
+            this.em.entity.ApplyLinearImpulse(ref tmp);
         }
 
         public void turnLeft()
         {
-            this.em.entity.AngularVelocity = new BEPUutilities.Vector3(MathF.Min(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
-                                                this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z);
+            //this.em.entity.AngularVelocity = new BEPUutilities.Vector3(MathF.Min(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
+            //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z);
+            var tmp = new BEPUutilities.Vector3(Speed, 0f, 0f);
+            this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void turnRight()
         {
-
+            var tmp = new BEPUutilities.Vector3(-Speed, 0f, 0f);
+            this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void lookUp()
@@ -127,7 +138,7 @@ namespace The_Great_Space_Race.Objects
         {
             //WorldMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, Pitch) * Matrix.CreateFromAxisAngle(Vector3.Up, Yaw);
             WorldMatrix = em.entity.WorldTransform.toXNA();
-            Debug.WriteLine(WorldMatrix.ToString());
+            Debug.WriteLine("Ship:  " + WorldMatrix.ToString());
 
             playTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -136,6 +147,8 @@ namespace The_Great_Space_Race.Objects
             Camera.Update(WorldMatrix);
 
             base.Update(gameTime);
+
+            em.entity.ActivityInformation.Activate();
         }
 
         public void OnCompleted()

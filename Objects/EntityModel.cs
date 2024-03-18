@@ -20,7 +20,8 @@ using static Objects.Helpers;
 
 namespace Objects
 {
-    public class EntityModel : DrawableGameComponent
+    // from https://github.com/bepu/bepuphysics1/blob/master/Documentation/Isolated%20Demos/GettingStartedDemo/EntityModel.cs
+    public class EntityModel : DrawableGameComponent, IObservable<ModelCollision>
     {
         /// <summary>
         /// Entity that this model follows.
@@ -38,6 +39,7 @@ namespace Objects
         private List<CollisionTriangle> triangles;
         private Microsoft.Xna.Framework.Vector3 min;
         private Microsoft.Xna.Framework.Vector3 max;
+        public IObserver<ModelCollision> Observer;
 
 
         /// <summary>
@@ -133,7 +135,7 @@ namespace Objects
             //and translation of the entity combined.
             //There are a variety of properties available in the entity, try looking around
             //in the list to familiarize yourself with it.
-            var worldMatrix = entity.WorldTransform;
+            var worldMatrix = Transform * entity.WorldTransform;
 
             Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[this.model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
@@ -160,6 +162,14 @@ namespace Objects
         void CollisionHappened(EntityCollidable sender, Collidable other, CollidablePairHandler pair, ContactData contact)
         {
             Console.WriteLine("Collision detected.");
+            Observer.OnNext(new ModelCollision { type = EventType.Collision, entity = sender, obj = other, data = contact});
+        }
+
+        public IDisposable Subscribe(IObserver<ModelCollision> observer)
+        {
+            Observer = observer;
+
+            return this;
         }
     }
 }
