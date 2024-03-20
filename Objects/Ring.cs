@@ -26,7 +26,7 @@ namespace Objects
 
             Observers = new List<IObserver<RingPassed>>();
 
-            em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .05f, this.Game);
+            em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .08f, this.Game);
             em.Subscribe(this);
             
 
@@ -43,6 +43,7 @@ namespace Objects
         public void SetUp(RingType type, Vector3 location, Vector3 rotation) 
         {
             this.type = type;
+            this.em.Initialize();
             this.em.entity.WorldTransform *= Matrix.CreateTranslation(location).toBEPU() * Matrix.CreateFromYawPitchRoll(rotation.X, rotation.Y, rotation.Z).toBEPU();
 
         }
@@ -84,6 +85,7 @@ namespace Objects
 
     public enum RingType
     {
+        Start,
         Normal,
         Checkpoint,
         HalfWay,

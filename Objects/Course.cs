@@ -36,6 +36,8 @@ namespace Objects
                 space = new Space();
             }
 
+            this.Rings = new List<Ring>().ToArray();
+
             base.Initialize();
 
             ship = Game.Components[0] as Ship;

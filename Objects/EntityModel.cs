@@ -106,6 +106,7 @@ namespace Objects
                 //More about collision events: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionEvents.md
                 this.entity.CollisionInformation.Events.ContactCreated += CollisionHappened;
             }
+            this.entity.WorldTransform = this.Transform;
             this.entity.BecomeDynamic(1);
 
 

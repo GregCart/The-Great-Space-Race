@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Objects;
+using System;
 using System.Collections.Generic;
 using The_Great_Space_Race.Objects;
 using Vector3 = BEPUutilities.Vector3;
@@ -159,10 +160,45 @@ namespace The_Great_Space_Race
             //        e.Tag = model; //set the object tag of this entity to the model so that it's easy to delete the graphics component later if the entity is removed.
             //    }
             //}
-
-            Ring r = new(this);
+            List<Ring> rings = new List<Ring>();
+            float prevx = 0f, prevy = 0f, prevz = 50f, prevRotX = 0f, prevRoty = 0f, prevRotz = 0f;
+            float xyzBound = 500, xyzOffset = 30f;
+            float rotBound = 90, rotOffset = 45;
+            for (int i = 0; i < 10; i++)
+            {
+                Ring r = new(this);
+                Random rand = new Random();
+                r.Initialize();
+                float x = 0f, y = 0f, z = 0f, xRot = 0f, yRot = 0f, zRot = 0f;
+                switch (i)
+                {
+                    case 0:
+                        r.SetUp(RingType.Start, new Microsoft.Xna.Framework.Vector3(prevx, prevy, prevz), new Microsoft.Xna.Framework.Vector3(prevRotX, prevRoty, prevRotz));
+                        break;
+                    case 4:
+                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
+                        xRot = (float)(prevRotX + rand.NextDouble() % rotBound - rotOffset); yRot = (float)(prevRoty + rand.NextDouble() % rotBound - rotOffset); zRot = (float)(prevRotz + rand.NextDouble() % rotBound - rotOffset);
+                        r.SetUp(RingType.HalfWay, new Microsoft.Xna.Framework.Vector3(x, y, z), new Microsoft.Xna.Framework.Vector3(xRot, yRot, zRot));
+                        break;
+                    case 9:
+                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
+                        xRot = (float)(prevRotX + rand.NextDouble() % rotBound - rotOffset); yRot = (float)(prevRoty + rand.NextDouble() % rotBound - rotOffset); zRot = (float)(prevRotz + rand.NextDouble() % rotBound - rotOffset);
+                        r.SetUp(RingType.Finnish, new Microsoft.Xna.Framework.Vector3(x, y, z), new Microsoft.Xna.Framework.Vector3(xRot, yRot, zRot));
+                        break;
+                    default:
+                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
+                        xRot = (float)(prevRotX + rand.NextDouble() % rotBound - rotOffset); yRot = (float)(prevRoty + rand.NextDouble() % rotBound - rotOffset); zRot = (float)(prevRotz + rand.NextDouble() % rotBound - rotOffset);
+                        r.SetUp(RingType.Normal, new Microsoft.Xna.Framework.Vector3(x, y, z), new Microsoft.Xna.Framework.Vector3(xRot, yRot, zRot));
+                        break;
+                }
+                
+                prevx = x; prevy = y; prevz = z;
+                prevRotX = xRot; prevRoty = yRot; prevRotz = zRot;
+                rings.Add(r);
+            }
+            
             Course c = new(this);
-            c.UpdateContent(false, new List<Ring> { r });
+            c.UpdateContent(false, rings);
             RaceManager.Instance.activeTrack = c;
         }
     }
