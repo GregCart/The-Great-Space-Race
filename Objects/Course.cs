@@ -107,7 +107,9 @@ namespace Objects
                 else if (rp.ringType == RingType.Finnish)
                 {
                     this.HasFinnished = true;
-                } else
+                }
+
+                if (!this.HasFinnished)
                 {
                     int ring = Array.FindIndex(this.Rings, obj => obj.Equals(rp.ring));
                     this.Rings[ring + 1].isNextRing = true;
