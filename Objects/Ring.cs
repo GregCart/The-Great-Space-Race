@@ -26,7 +26,7 @@ namespace Objects
 
             Observers = new List<IObserver<RingPassed>>();
 
-            em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .08f, new BEPUutilities.Vector3(3, 3, 3), this.Game);
+            em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .08f, new BEPUutilities.Vector3(15, 1, 15), this.Game);
             em.Subscribe(this);
             
 

@@ -59,7 +59,7 @@ namespace The_Great_Space_Race.Objects
 
         public override void Initialize()
         {
-            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .2f, new BEPUutilities.Vector3(3, 3, 3), this.Game);
+            em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .2f, new BEPUutilities.Vector3(1, 1, 1), this.Game);
             mainEngine = Game.Content.Load<SoundEffect>("Sounds/CartoonCarSound");
             Camera = new Camera(Game, WorldMatrix.Translation, Speed);
 
