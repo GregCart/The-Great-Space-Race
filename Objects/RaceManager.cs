@@ -18,7 +18,7 @@ namespace Objects
             }
         }
         
-        public Course activeTrack;
+        protected Course activeTrack;
 
         private bool trackLoaded = false;
 
@@ -34,14 +34,17 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
-            if (activeTrack != null && trackLoaded == false)
-            {
-                Game.Components.Add(activeTrack);
-                activeTrack.LoadContent();
-                trackLoaded = true;
-            }
 
             base.Update(gameTime);
+        }
+
+        public void LoadActiveTrack(Course c)
+        {
+            this.activeTrack = c;
+            Game.Components.Add(activeTrack);
+            c.Initialize();
+            activeTrack.LoadContent();
+            trackLoaded = true;
         }
 
         public override void Draw(GameTime gameTime)

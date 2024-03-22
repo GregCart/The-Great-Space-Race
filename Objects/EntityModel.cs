@@ -17,6 +17,7 @@ using Vector3 = BEPUutilities.Vector3;
 
 using static Objects.Helpers;
 using System.Diagnostics;
+using System.ComponentModel.Design;
 
 
 namespace Objects
@@ -107,8 +108,8 @@ namespace Objects
                 //}
 
                 //this.entity = new Cylinder(this.Transform.Translation, this.max.Y - this.min.Y, (this.max.X - this.min.X) / 2f);
-                //this.entity = new Cylinder(this.Transform.Translation, entityScale.X, entityScale.Z/2);
-                this.entity = new Box(this.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
+                this.entity = new Cylinder(this.Transform.Translation, entityScale.Y, entityScale.Z/2);
+                //this.entity = new Box(this.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
                 //From Addison
                 //Disable solver to make box generate collision events but no affect physics(like a trigger in unity)
                 //More about collision rules: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionRules.md
@@ -164,7 +165,8 @@ namespace Objects
             var worldMatrix = entity.WorldTransform;
 
             //foreach (Model m in this.model)
-            //{
+            if (this.model[1] == null)
+            {
                 Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[model[0].Bones.Count];
                 model[0].CopyAbsoluteBoneTransformsTo(transforms);
                 boneTransforms = transforms.toBEPU();
@@ -183,24 +185,26 @@ namespace Objects
                     }
                     mesh.Draw();
                 }
-            //}
-            transforms = new Microsoft.Xna.Framework.Matrix[model[1].Bones.Count];
-            model[1].CopyAbsoluteBoneTransformsTo(transforms);
-            boneTransforms = transforms.toBEPU();
-            foreach (ModelMesh mesh in model[1].Meshes)
+            } else
             {
-                foreach (BasicEffect effect in mesh.Effects)
+                Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[model[1].Bones.Count];
+                model[1].CopyAbsoluteBoneTransformsTo(transforms);
+                boneTransforms = transforms.toBEPU();
+                foreach (ModelMesh mesh in model[1].Meshes)
                 {
-                    effect.EnableDefaultLighting();
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
 
-                    //                              POSITION                        SCALE                                               ???
-                    effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(ModelScale) * worldMatrix.toXNA();
-                    //effect.World = worldMatrix.toXNA();
-                    // camera effects
-                    effect.View = ((Ship)Game.Components.ElementAt(0)).Camera.ViewMatrix;
-                    effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
+                        //                              POSITION                        SCALE                                               ???
+                        effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(ModelScale) * worldMatrix.toXNA();
+                        //effect.World = worldMatrix.toXNA();
+                        // camera effects
+                        effect.View = ((Ship)Game.Components.ElementAt(0)).Camera.ViewMatrix;
+                        effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
+                    }
+                    mesh.Draw();
                 }
-                mesh.Draw();
             }
             base.Draw(gameTime);
         }

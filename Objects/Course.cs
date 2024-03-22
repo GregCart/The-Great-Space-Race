@@ -56,18 +56,18 @@ namespace Objects
 
             foreach (Ring r in Rings)
             {
-                r.em.UpdateContent();
                 Game.Components.Add(r);
             }
             box.Initialize();
             Game.Components.Add(box);
+
+            this.LoadContent();
         }
 
         public void LoadContent()
         {
             foreach (Ring r in Rings)
             {
-                r.Initialize();
                 space.Add(r.em.entity);
             }
         }

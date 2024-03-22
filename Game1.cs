@@ -155,8 +155,9 @@ namespace The_Great_Space_Race
             box.Initialize();
             
             Course c = new(this);
+            //c.Initialize();
+            RaceManager.Instance.LoadActiveTrack(c);
             c.UpdateContent(false, rings, box);
-            RaceManager.Instance.activeTrack = c;
         }
     }
 }
