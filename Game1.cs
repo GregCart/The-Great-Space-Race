@@ -33,6 +33,7 @@ namespace The_Great_Space_Race
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
             IsMouseVisible = false;
         }
 
@@ -75,24 +76,6 @@ namespace The_Great_Space_Race
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            /*if (InputManager.LeftClicked == true)
-            {
-                //If the user is clicking, start firing some boxes.
-                //First, create a new dynamic box at the camera's location.
-                Box toAdd = new Box(ship.Camera.Position, 1, 1, 1, 1);
-                //Set the velocity of the new box to fly in the direction the camera is pointing.
-                //Entities have a whole bunch of properties that can be read from and written to.
-                //Try looking around in the entity's available properties to get an idea of what is available.
-                toAdd.LinearVelocity = ship.Camera.WorldMatrix.Forward * 10;
-                //Add the new box to the simulation.
-                testSpace.Add(toAdd);
-
-                //Add a graphical representation of the box to the drawable game components.
-                EntityModel model = new EntityModel(toAdd, ring, Matrix.Identity.toBEPU(), this);
-                Components.Add(model);
-                toAdd.Tag = model;  //set the object tag of this entity to the model so that it's easy to delete the graphics component later if the entity is removed.
-            }*/
-
             base.Update(gameTime);
         }
 
@@ -100,34 +83,6 @@ namespace The_Great_Space_Race
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            /*// Copy any parent transforms.
-            Matrix[] transforms = new Matrix[ring.Bones.Count];
-            ring.CopyAbsoluteBoneTransformsTo(transforms);
-            // Draw the model. A model can have multiple meshes, so loop.
-            foreach (ModelMesh mesh in ring.Meshes)
-            {
-                // This is where the mesh orientation is set, as well
-                // as our camera and projection.
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
-                    //WORLD TRANSFORM
-                    effect.World = transforms[mesh.ParentBone.Index]
-                        * Matrix.CreateTranslation(new (0.0f, 0.0f, 0.0f))
-                        * Matrix.CreateScale(.02f);
-                    //camera position, scale, rotation
-                    effect.View = Matrix.CreateLookAt((new Vector3(-10, -10, -10)).toXNA(),
-                        Vector3.Zero.toXNA(), Vector3.Up.toXNA());
-                    effect.Projection = Matrix.CreatePerspectiveFieldOfView(
-                        MathHelper.ToRadians(45.0f), 16f/9f,
-                        1.0f, 10000.0f);
-                }
-                // Draw the mesh, using the effects set above.
-                mesh.Draw();
-            }
-            base.Draw(gameTime);*/
-
-            // TODO: Add your drawing code here
             _spriteBatch.Begin();
             base.Draw(gameTime);
             _spriteBatch.End();
@@ -161,9 +116,9 @@ namespace The_Great_Space_Race
             //    }
             //}
             List<Ring> rings = new List<Ring>();
-            float prevx = 0f, prevy = 0f, prevz = 50f, prevRotX = 0f, prevRoty = 0f, prevRotz = 0f;
-            float xyzBound = 500, xyzOffset = 30f;
-            float rotBound = 90, rotOffset = 45;
+            float prevx = 0f, prevy = 0f, prevz = 5f, prevRotX = 0f, prevRoty = 0f, prevRotz = 0f;
+            float xyzBound = 20f, xyzOffset = 10f;
+            float rotBound = 20, rotOffset = 10;
             for (int i = 0; i < 10; i++)
             {
                 Ring r = new(this);
@@ -176,17 +131,17 @@ namespace The_Great_Space_Race
                         r.SetUp(RingType.Start, new Microsoft.Xna.Framework.Vector3(prevx, prevy, prevz), new Microsoft.Xna.Framework.Vector3(prevRotX, prevRoty, prevRotz));
                         break;
                     case 4:
-                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
+                        x = (float)(prevx + (rand.NextDouble() % xyzBound/2) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound / 2) - xyzOffset); z = xyzBound + (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
                         xRot = (float)(prevRotX + rand.NextDouble() % rotBound - rotOffset); yRot = (float)(prevRoty + rand.NextDouble() % rotBound - rotOffset); zRot = (float)(prevRotz + rand.NextDouble() % rotBound - rotOffset);
                         r.SetUp(RingType.HalfWay, new Microsoft.Xna.Framework.Vector3(x, y, z), new Microsoft.Xna.Framework.Vector3(xRot, yRot, zRot));
                         break;
                     case 9:
-                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
+                        x = (float)(prevx + (rand.NextDouble() % xyzBound / 2) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound / 2) - xyzOffset); z = xyzBound + (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
                         xRot = (float)(prevRotX + rand.NextDouble() % rotBound - rotOffset); yRot = (float)(prevRoty + rand.NextDouble() % rotBound - rotOffset); zRot = (float)(prevRotz + rand.NextDouble() % rotBound - rotOffset);
                         r.SetUp(RingType.Finnish, new Microsoft.Xna.Framework.Vector3(x, y, z), new Microsoft.Xna.Framework.Vector3(xRot, yRot, zRot));
                         break;
                     default:
-                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
+                        x = (float)(prevx + (rand.NextDouble() % xyzBound) - xyzOffset); y = (float)(prevy + (rand.NextDouble() % xyzBound) - xyzOffset); z = xyzBound + (float)(prevz + (rand.NextDouble() % xyzBound) - xyzOffset);
                         xRot = (float)(prevRotX + rand.NextDouble() % rotBound - rotOffset); yRot = (float)(prevRoty + rand.NextDouble() % rotBound - rotOffset); zRot = (float)(prevRotz + rand.NextDouble() % rotBound - rotOffset);
                         r.SetUp(RingType.Normal, new Microsoft.Xna.Framework.Vector3(x, y, z), new Microsoft.Xna.Framework.Vector3(xRot, yRot, zRot));
                         break;
@@ -196,9 +151,11 @@ namespace The_Great_Space_Race
                 prevRotX = xRot; prevRoty = yRot; prevRotz = zRot;
                 rings.Add(r);
             }
+            SkyBox box = new SkyBox("SkyBox", this);
+            box.Initialize();
             
             Course c = new(this);
-            c.UpdateContent(false, rings);
+            c.UpdateContent(false, rings, box);
             RaceManager.Instance.activeTrack = c;
         }
     }

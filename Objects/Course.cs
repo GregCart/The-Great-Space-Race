@@ -13,9 +13,12 @@ namespace Objects
     {
         public string Name { get; set; }
         public Space space;
+        public SkyBox skyBox;
         public Ring[] Rings;
         public bool IsOrdered;
         public bool HasFinnished;
+        public double timer;
+        public int RingsHit;
 
         private static List<IObserver<bool>> Observers;
 
@@ -44,15 +47,20 @@ namespace Objects
             this.space.Add(ship.em.entity);
         }
 
-        public void UpdateContent(bool isOrdered, List<Ring> rings) 
+        public void UpdateContent(bool isOrdered, List<Ring> rings, SkyBox box) 
+        //public void UpdateContent(bool isOrdered, List<Ring> rings)
         {
             this.IsOrdered = isOrdered;
             this.Rings = rings.ToArray();
+            //this.skyBox = box;
 
             foreach (Ring r in Rings)
             {
+                r.em.UpdateContent();
                 Game.Components.Add(r);
             }
+            box.Initialize();
+            Game.Components.Add(box);
         }
 
         public void LoadContent()
@@ -67,7 +75,10 @@ namespace Objects
         public override void Update(GameTime gameTime)
         {
             if (!HasFinnished)
+            {
                 space.Update();
+                timer += gameTime.ElapsedGameTime.Milliseconds;
+            }
 
             base.Update(gameTime);
         }
@@ -84,7 +95,19 @@ namespace Objects
 
         public void OnNext(ModelCollision value)
         {
-            throw new NotImplementedException();
+            if (value.type == EventType.Ring_Passed)
+            {
+                this.RingsHit++;
+                RingPassed rp = (RingPassed)value;
+                if (rp.ring == RingType.Start)
+                {
+                    this.HasFinnished = false;
+                } 
+                else if (rp.ring == RingType.Finnish)
+                {
+                    this.HasFinnished = true;
+                }
+            }
         }
 
         public IDisposable Subscribe(IObserver<bool> observer)

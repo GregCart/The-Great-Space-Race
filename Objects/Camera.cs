@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BEPUphysics.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using The_Great_Space_Race;
@@ -61,19 +62,22 @@ namespace Objects
         /// Updates the camera's view matrix.
         /// </summary>
         /// <param name="dt">Timestep duration.</param>
-        public void Update(Matrix world)
+        public void Update(Entity e)
         {
             if (AspectRatio == 0)
             {
                 AspectRatio = ((GraphicsDeviceManager)Game.Services.GetService(typeof(GraphicsDeviceManager))).GraphicsDevice.Viewport.AspectRatio;
             }
-            Position = world.Translation + new Vector3(0.0f, .35f, -1.8f);
+            Matrix world = e.WorldTransform.toXNA();
+            Position = world.Translation + BEPUutilities.Quaternion.Transform(new Vector3(0.0f, .35f, -1.8f).toBEPU(), e.Orientation).toXNA();
+            //Position = world.Translation + new Vector3(0.0f, .35f, -1.8f);
 
             this.WorldMatrix = world;
-            this.ViewMatrix = Matrix.CreateLookAt(Position, Position + new Vector3(0.0f, 0f, .5f), world.Up);
+            //this.ViewMatrix = Matrix.CreateLookAt(Position, Position + new Vector3(0.0f, 0f, .5f), world.Up);
+            this.ViewMatrix = Matrix.CreateLookAt(Position, Position + BEPUutilities.Quaternion.Transform(new Vector3(0.0f, 0f, .5f).toBEPU(), e.Orientation).toXNA(), world.Up);
             this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(90f), AspectRatio, .2f, 10000f);
 
-            Debug.WriteLine("Camera: " + this.WorldMatrix.ToString());
+            //Debug.WriteLine("Camera: " + this.WorldMatrix.ToString());
         }
     }
 }

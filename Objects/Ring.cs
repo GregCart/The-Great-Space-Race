@@ -44,8 +44,8 @@ namespace Objects
         {
             this.type = type;
             this.em.Initialize();
-            this.em.entity.WorldTransform *= Matrix.CreateTranslation(location).toBEPU() * Matrix.CreateFromYawPitchRoll(rotation.X, rotation.Y, rotation.Z).toBEPU();
-
+            this.em.Transform *= Matrix.CreateTranslation(location).toBEPU() * Matrix.CreateFromYawPitchRoll(rotation.X, rotation.Y, rotation.Z).toBEPU();
+            this.em.UpdateContent();
         }
 
         public IDisposable Subscribe(IObserver<RingPassed> observer)

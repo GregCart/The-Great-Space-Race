@@ -4,13 +4,17 @@ using Objects;
 using System;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
+using BEPUutilities;
+
+using Matrix = Microsoft.Xna.Framework.Matrix;
+using MathHelper = Microsoft.Xna.Framework.MathHelper;
 
 
 namespace The_Great_Space_Race.Objects
 {
     public class Ship : GameComponent, IObserver<InputEvent>
     {
-        private const float MAX_SPEED = 10f;
+        private const float MAX_SPEED = 7f;
 
         public string Name { get; set; }
         public Camera Camera { get; set; }
@@ -71,6 +75,7 @@ namespace The_Great_Space_Race.Objects
             //this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y, 
             //                                   MathF.Max(this.em.entity.LinearVelocity.Z - Speed, -MAX_SPEED)).toBEPU();
             var tmp = new BEPUutilities.Vector3(0f, 0f, Speed);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyLinearImpulse(ref tmp);
             /*if (playTime > mainEngine.Duration.TotalSeconds)
             {
@@ -83,7 +88,8 @@ namespace The_Great_Space_Race.Objects
         {
             //this.em.entity.LinearVelocity = new Vector3(this.em.entity.LinearVelocity.X, this.em.entity.LinearVelocity.Y,
             //                                    MathF.Min(this.em.entity.LinearVelocity.Z + Speed, MAX_SPEED)).toBEPU();
-            var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed);
+            var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed/2);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyLinearImpulse(ref tmp);
             /*if (playTime > mainEngine.Duration.TotalSeconds)
             {
@@ -97,6 +103,7 @@ namespace The_Great_Space_Race.Objects
             //this.em.entity.LinearVelocity = new Vector3(MathF.Min(this.em.entity.LinearVelocity.X - Speed, -MAX_SPEED), 
             //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
             var tmp = new BEPUutilities.Vector3(Speed/3, 0f, 0f);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyLinearImpulse(ref tmp);
         }
 
@@ -105,6 +112,7 @@ namespace The_Great_Space_Race.Objects
             //this.em.entity.LinearVelocity = new Vector3(MathF.Max(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
             //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z).toBEPU();
             var tmp = new BEPUutilities.Vector3(-Speed/3, 0f, 0f);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyLinearImpulse(ref tmp);
         }
 
@@ -112,39 +120,61 @@ namespace The_Great_Space_Race.Objects
         {
             //this.em.entity.AngularVelocity = new BEPUutilities.Vector3(MathF.Min(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
             //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z);
-            var tmp = new BEPUutilities.Vector3(Speed, 0f, 0f);
+            var tmp = new BEPUutilities.Vector3(0f, Speed / 3, 0f);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void turnRight()
         {
-            var tmp = new BEPUutilities.Vector3(-Speed, 0f, 0f);
+            var tmp = new BEPUutilities.Vector3(0f, -Speed / 3, 0f);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void lookUp()
         {
-
+            var tmp = new BEPUutilities.Vector3(-Speed/3, 0f, 0f);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
+            this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void lookDown()
         {
+            var tmp = new BEPUutilities.Vector3(Speed / 3, 0f, 0f);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
+            this.em.entity.ApplyAngularImpulse(ref tmp);
+        }
 
+        public void tiltLeft()
+        {
+            var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed / 3);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
+            this.em.entity.ApplyAngularImpulse(ref tmp);
+        }
+
+        public void tiltRight()
+        {
+            var tmp = new BEPUutilities.Vector3(0f, 0f, Speed / 3);
+            tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
+            this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         
 
         public override void Update(GameTime gameTime)
         {
+            em.entity.BecomeDynamic(1);
+
             //WorldMatrix = Matrix.CreateFromAxisAngle(Vector3.Right, Pitch) * Matrix.CreateFromAxisAngle(Vector3.Up, Yaw);
             WorldMatrix = em.entity.WorldTransform.toXNA();
-            Debug.WriteLine("Ship:  " + WorldMatrix.ToString());
+            //Debug.WriteLine("Ship:  " + WorldMatrix.ToString());
 
             playTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             dt = (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
 
-            Camera.Update(WorldMatrix);
+            Camera.Update(em.entity);
 
             base.Update(gameTime);
 
@@ -168,29 +198,35 @@ namespace The_Great_Space_Race.Objects
                 
                 switch (value.key)
                 {
-                    case Keys.W:
+                    case Keys.Up:
                         speedUp();
                         break;
-                    case Keys.S:
+                    case Keys.Down:
                         slowDown();
                         break;
-                    case Keys.A:
+                    case Keys.Left:
                         moveLeft();
                         break;
-                    case Keys.D:
+                    case Keys.Right:
                         moveRight();
                         break;
-                    case Keys.Up:
+                    case Keys.W:
                         lookUp();
                         break;
-                    case Keys.Down:
+                    case Keys.S:
                         lookDown();
                         break;
-                    case Keys.Left:
+                    case Keys.A:
                         turnLeft();
                         break;
-                    case Keys.Right:
+                    case Keys.D:
                         turnRight();
+                        break;
+                    case Keys.Q:
+                        tiltLeft();
+                        break;
+                    case Keys.E:
+                        tiltRight();
                         break;
                 }
             }
