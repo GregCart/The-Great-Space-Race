@@ -51,6 +51,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/Intergalactic_Spaceship-(Wavefront).obj
 
+#begin Models/output.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Models/output.png
+
 #begin Models/RingLampV3_FullRing_100_Halo.obj
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -86,7 +98,7 @@
 /processorParam:RotationZ=0
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=NoChange
+/processorParam:TextureFormat=Compressed
 /build:Models/SkyBox.fbx
 
 #begin Sounds/CartoonCarSound.mp3

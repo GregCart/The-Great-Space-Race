@@ -16,7 +16,7 @@ namespace Objects
 
         public override void Initialize()
         {
-            this.em = new EntityModel(this.modelPath, Matrix.Identity.toBEPU(), 10f, Game);
+            this.em = new EntityModel(this.modelPath, Matrix.Identity.toBEPU(), .1f, new BEPUutilities.Vector3(3, 3, 3), Game);
             this.em.Initialize();
 
             this.Game.Components.Add(this.em);

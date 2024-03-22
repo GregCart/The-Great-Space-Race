@@ -28,19 +28,18 @@ namespace Objects
         /// Entity that this model follows.
         /// </summary>
         public Entity entity;
-        public Model model;
+        public List<Model> model;
         /// <summary>
         /// Base transformation to apply to the model.
         /// </summary>
         public Matrix Transform;
         Matrix[] boneTransforms;
-        public float Scale = 1.0f;
+        public float ModelScale = 1.0f;
         public string modelPath;
+        public IObserver<ModelCollision> Observer;
 
         private List<CollisionTriangle> triangles;
-        private Microsoft.Xna.Framework.Vector3 min;
-        private Microsoft.Xna.Framework.Vector3 max;
-        public IObserver<ModelCollision> Observer;
+        private Vector3 entityScale;
 
 
         /// <summary>
@@ -50,20 +49,26 @@ namespace Objects
         /// <param name="model">Graphical representation to use for the entity.</param>
         /// <param name="transform">Base transformation to apply to the model before moving to the entity.</param>
         /// <param name="game">Game to which this component will belong.</param>
-        public EntityModel(string modelPath, Matrix transform, float scale, Game game)
+        public EntityModel(string modelPath, Matrix transform, float modelScale, Vector3 entityScale, Game game)
             : base(game)
         {
             this.modelPath = modelPath;
+            this.model = new List<Model>();
+            this.model.Add(null);
             this.Transform = transform;
-            this.Scale = scale;
+            this.ModelScale = modelScale;
+            this.entityScale = entityScale;
         }
 
         public EntityModel(Entity entity, Model model, Matrix transform, Game game)
             : base(game)
         {
             this.entity = entity;
-            this.model = model;
+            this.model = new List<Model>();
+            this.model.Add(null);
+            this.model.Add(model);
             this.Transform = transform;
+            this.entityScale = entityScale;
         }
 
         public override void Initialize()
@@ -75,31 +80,35 @@ namespace Objects
 
         protected override void LoadContent()
         {
-            if (this.model == null)
+            //if (this.model == null)
+
+            this.model[0] = Game.Content.Load<Model>("Models/DefaultCube_1x1x1");
+            //for (int i = 1; i < this.model.Count; i++) 
+            if (this.modelPath != null)
             {
-                this.model = Game.Content.Load<Model>("Models/" + modelPath);
-                //this.model = Game.Content.Load<Model>("Models/DefaultCube_1x1x1");
+                this.model.Add(Game.Content.Load<Model>("Models/" + modelPath));
             }
             if (this.entity == null)
             {
                 List<CollisionTriangle> tmp;
                 Microsoft.Xna.Framework.Vector3 tmpMin;
                 Microsoft.Xna.Framework.Vector3 tmpMax;
-                foreach (ModelMesh mesh in this.model.Meshes)
-                {
-                    Matrix transform = CreateTransform(mesh.ParentBone).toBEPU();
-                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                    {
-                        (tmp, tmpMax, tmpMin) = ExtractMeshPart(meshPart, transform.toXNA());
-                        triangles.AddRange(tmp);
-                        tmpMax.UpdateMinMax(ref max, ref min);
-                        tmpMin.UpdateMinMax(ref max, ref min);
-                    }
-                }
+
+                //foreach (ModelMesh mesh in this.model.Meshes)
+                //{
+                //    Matrix transform = CreateTransform(mesh.ParentBone).toBEPU();
+                 //   foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                 //   {
+                 //       (tmp, tmpMax, tmpMin) = ExtractMeshPart(meshPart, transform.toXNA());
+                 //       triangles.AddRange(tmp);
+                 //       tmpMax.UpdateMinMax(ref max, ref min);
+                 //       tmpMin.UpdateMinMax(ref max, ref min);
+                 //   }
+                //}
 
                 //this.entity = new Cylinder(this.Transform.Translation, this.max.Y - this.min.Y, (this.max.X - this.min.X) / 2f);
-                this.entity = new Cylinder(this.Transform.Translation, 1f, 1f);
-                //this.entity = new Box(this.Transform.Translation, 1, 1, 1);
+                //this.entity = new Cylinder(this.Transform.Translation, 1f, 1f);
+                this.entity = new Box(this.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
                 //From Addison
                 //Disable solver to make box generate collision events but no affect physics(like a trigger in unity)
                 //More about collision rules: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionRules.md
@@ -110,18 +119,22 @@ namespace Objects
                 this.entity.CollisionInformation.Events.ContactCreated += CollisionHappened;
             }
             this.entity.WorldTransform = this.Transform;
-            this.entity.BecomeDynamic(1);
+            this.entity.BecomeDynamic(2);
 
 
             //Collect any bone transformations in the model itself.
-            //The default cube model doesn't have any, but this allows the EntityModel to work with more complicated shapes.
-            boneTransforms = new Matrix[model.Bones.Count];
-            foreach (ModelMesh mesh in model.Meshes)
+            //The default cube model doesn't have any, but this allows the EntityModel to work with more complicated shapes
+            foreach (Model m in  this.model)
             {
-                foreach (BasicEffect effect in mesh.Effects)
+                boneTransforms = new Matrix[m.Bones.Count];
+                foreach (ModelMesh mesh in m.Meshes)
                 {
-                    effect.EnableDefaultLighting();
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+                    }
                 }
+
             }
 
             base.LoadContent();
@@ -150,23 +163,27 @@ namespace Objects
             //in the list to familiarize yourself with it.
             var worldMatrix = entity.WorldTransform;
 
-            Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[this.model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(transforms);
-            boneTransforms = transforms.toBEPU();
-            foreach (ModelMesh mesh in model.Meshes)
+            foreach (Model m in this.model)
             {
-                foreach (BasicEffect effect in mesh.Effects)
+                Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[m.Bones.Count];
+                m.CopyAbsoluteBoneTransformsTo(transforms);
+                boneTransforms = transforms.toBEPU();
+                foreach (ModelMesh mesh in m.Meshes)
                 {
-                    effect.EnableDefaultLighting();
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
 
-                    //                              POSITION                        SCALE                                               ???
-                    effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(Scale) * worldMatrix.toXNA();
-                    //effect.World = worldMatrix.toXNA();
-                    // camera effects
-                    effect.View = ((Ship) Game.Components.ElementAt(0)).Camera.ViewMatrix;
-                    effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
+                        //                              POSITION                        SCALE                                               ???
+                        effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(ModelScale) * worldMatrix.toXNA();
+                        //effect.World = worldMatrix.toXNA();
+                        // camera effects
+                        effect.View = ((Ship)Game.Components.ElementAt(0)).Camera.ViewMatrix;
+                        effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
+                    }
+                    mesh.Draw();
                 }
-                mesh.Draw();
+
             }
             base.Draw(gameTime);
         }
