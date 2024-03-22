@@ -11,6 +11,7 @@ namespace Objects
         public bool hasPassed;
         public RingType type;
         public EntityModel em;
+        public bool isNextRing;
 
         private List<IObserver<RingPassed>> Observers;
         private Matrix WorldTransform;
@@ -23,6 +24,7 @@ namespace Objects
         public override void Initialize()
         {
             hasPassed = false;
+            isNextRing = false;
 
             Observers = new List<IObserver<RingPassed>>();
 
@@ -37,6 +39,11 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
+            if (isNextRing)
+            {
+                this.em.DrawDuplicateModel(1.5f);
+            }
+
             base.Update(gameTime);
         }
 
@@ -46,6 +53,10 @@ namespace Objects
             this.em.Initialize();
             this.em.Transform *= Matrix.CreateTranslation(location).toBEPU() * Matrix.CreateFromYawPitchRoll(rotation.X, rotation.Y, rotation.Z).toBEPU();
             this.em.UpdateContent();
+            if (type == RingType.Start)
+            {
+                this.isNextRing = true;
+            }
         }
 
         public IDisposable Subscribe(IObserver<RingPassed> observer)
@@ -73,11 +84,11 @@ namespace Objects
             }
 
             this.hasPassed = true;
+            this.isNextRing = false;
             RingPassed pass = new RingPassed(value);
-            pass.ring = this.type;
+            pass.ring = this;
             foreach (IObserver<RingPassed> observer in Observers)
             {
-
                 observer.OnNext(pass);
             }
         }

@@ -17,12 +17,12 @@ namespace Objects
 
     public class RingPassed : ModelCollision
     {
-        public new EventType type { get; private set; } = EventType.Ring_Passed;
-        public RingType ring;
+        public EventType type { get; private set; } = EventType.Ring_Passed;
+        public RingType ringType;
+        public Ring ring;
 
         public RingPassed(ModelCollision other)
         {
-            this.type = other.type;
             this.entity = other.entity;
             this.obj = other.obj;
             this.data = other.data;

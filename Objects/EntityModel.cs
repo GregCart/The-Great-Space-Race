@@ -41,6 +41,7 @@ namespace Objects
 
         private List<CollisionTriangle> triangles;
         private Vector3 entityScale;
+        private bool dupping;
 
 
         /// <summary>
@@ -75,6 +76,7 @@ namespace Objects
         public override void Initialize()
         {
             this.triangles = new List<CollisionTriangle>();
+            this.dupping = false;
 
             base.Initialize();
         }
@@ -87,6 +89,7 @@ namespace Objects
             //for (int i = 1; i < this.model.Count; i++) 
             if (this.modelPath != null)
             {
+                this.model.Add(Game.Content.Load<Model>("Models/" + modelPath));
                 this.model.Add(Game.Content.Load<Model>("Models/" + modelPath));
             }
             if (this.entity == null)
@@ -139,6 +142,11 @@ namespace Objects
             }
 
             base.LoadContent();
+        }
+
+        public void DrawDuplicateModel(float scale)
+        {
+            this.dupping = true;
         }
 
         public void UpdateContent()
@@ -204,6 +212,29 @@ namespace Objects
                         effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
                     }
                     mesh.Draw();
+                }
+
+                if (dupping)
+                {
+                    transforms = new Microsoft.Xna.Framework.Matrix[model[2].Bones.Count];
+                    model[2].CopyAbsoluteBoneTransformsTo(transforms);
+                    boneTransforms = transforms.toBEPU();
+                    foreach (ModelMesh mesh in model[2].Meshes)
+                    {
+                        foreach (BasicEffect effect in mesh.Effects)
+                        {
+                            effect.EnableDefaultLighting();
+
+                            //                              POSITION                        SCALE                                               ???
+                            effect.World = boneTransforms[mesh.ParentBone.Index].toXNA() * Microsoft.Xna.Framework.Matrix.CreateScale(ModelScale + .02f) * worldMatrix.toXNA();
+                            //effect.World = worldMatrix.toXNA();
+                            // camera effects
+                            effect.View = ((Ship)Game.Components.ElementAt(0)).Camera.ViewMatrix;
+                            effect.Projection = ((Ship)Game.Components.ElementAt(0)).Camera.ProjectionMatrix;
+                        }
+                        mesh.Draw();
+                    }
+                    dupping = false;
                 }
             }
             base.Draw(gameTime);

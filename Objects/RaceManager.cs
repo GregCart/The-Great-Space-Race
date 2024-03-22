@@ -69,7 +69,7 @@ namespace Objects
 
         public void OnNext(RingPassed value)
         {
-            if (value.ring == RingType.Finnish)
+            if (value.ringType == RingType.Finnish)
             {
                 activeTrack.HasFinnished = true;
             }

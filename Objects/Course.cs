@@ -69,6 +69,7 @@ namespace Objects
             foreach (Ring r in Rings)
             {
                 space.Add(r.em.entity);
+                r.Subscribe(this);
             }
         }
 
@@ -99,13 +100,17 @@ namespace Objects
             {
                 this.RingsHit++;
                 RingPassed rp = (RingPassed)value;
-                if (rp.ring == RingType.Start)
+                if (rp.ringType == RingType.Start)
                 {
                     this.HasFinnished = false;
                 } 
-                else if (rp.ring == RingType.Finnish)
+                else if (rp.ringType == RingType.Finnish)
                 {
                     this.HasFinnished = true;
+                } else
+                {
+                    int ring = Array.FindIndex(this.Rings, obj => obj.Equals(rp.ring));
+                    this.Rings[ring + 1].isNextRing = true;
                 }
             }
         }

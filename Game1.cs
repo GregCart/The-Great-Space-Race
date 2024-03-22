@@ -90,7 +90,7 @@ namespace The_Great_Space_Race
 
         void LoadTestCube()
         {
-            //ring = Content.Load<Model>("Models/RingLampV3_FullRing_100_Halo");
+            //ringType = Content.Load<Model>("Models/RingLampV3_FullRing_100_Halo");
 
             //testSpace = new Space();
             //testSpace.ForceUpdater.Gravity = new Vector3(0, -9.81f, 0);
@@ -108,7 +108,7 @@ namespace The_Great_Space_Race
             //    if (box != null) //This won't create any graphics for an entity that isn't a box since the model being used is a box.
             //    {
             //        Matrix scaling = Matrix.CreateScale(box.Width, box.Height, box.Length); //Since the cube model is 1x1x1, it needs to be scaled to match the size of each individual box.
-            //        EntityModel model = new EntityModel(e, ring, scaling.toBEPU(), this);
+            //        EntityModel model = new EntityModel(e, ringType, scaling.toBEPU(), this);
             //        //Add the drawable game component for this entity to the game.
             //        Components.Add(model);
             //       model.UpdateContent();
