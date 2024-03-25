@@ -32,7 +32,7 @@ namespace Objects
         public Course(Game1 game) : base(game)
         {
             this.IsOrdered = false;
-            this.HasFinnished = true;
+            this.HasFinnished = false;
             this.started = false;
             this.score = 0;
         }
@@ -110,9 +110,9 @@ namespace Objects
             {
                 this.RingsHit++;
                 RingPassed rp = (RingPassed)value;
-                if (rp.ringType == RingType.Start)
+                if (!this.started && rp.ringType == RingType.Start)
                 {
-                    this.HasFinnished = false;
+                    this.started = true;
                 } 
                 else if (rp.ringType == RingType.Finnish)
                 {

@@ -83,12 +83,13 @@ namespace Objects
                 return;
             }
 
-            if (!this.hasPassed && this.isNextRing || this.type == RingType.Finnish)
+            if (!this.hasPassed || this.type == RingType.Finnish)
             {
                 this.hasPassed = true;
                 this.isNextRing = false;
                 RingPassed pass = new RingPassed(value);
                 pass.ring = this;
+                pass.ringType = this.type;
                 foreach (IObserver<RingPassed> observer in Observers)
                 {
                     observer.OnNext(pass);
