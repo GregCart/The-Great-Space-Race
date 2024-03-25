@@ -25,13 +25,16 @@ namespace Objects
         private static List<IObserver<bool>> Observers;
 
         private Ship ship;
+        private int score;
+        private bool started;
 
 
         public Course(Game1 game) : base(game)
         {
             this.IsOrdered = false;
-            this.HasFinnished = false;
-            
+            this.HasFinnished = true;
+            this.started = false;
+            this.score = 0;
         }
 
         public override void Initialize()
@@ -82,7 +85,7 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
-            if (!HasFinnished)
+            if (!started || !HasFinnished)
             {
                 space.Update();
                 timer += gameTime.ElapsedGameTime.Milliseconds;
@@ -114,6 +117,7 @@ namespace Objects
                 else if (rp.ringType == RingType.Finnish)
                 {
                     this.HasFinnished = true;
+                    CalculateScore();
                 }
 
                 if (!this.HasFinnished)
@@ -127,7 +131,12 @@ namespace Objects
         public override void Draw(GameTime gameTime)
         {
             ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Time: " + timer / 100, new Vector2(10, 10), Color.White);
-            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Rings: " + RingsHit, new Vector2(10, 20), Color.White);
+            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Rings: " + RingsHit, new Vector2(10, 30), Color.White);
+
+            if (this.HasFinnished)
+            {
+                ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Your Score:\n" + score, new Vector2(50, 50), Color.White);
+            }
 
             base.Draw(gameTime);
         }
@@ -137,6 +146,11 @@ namespace Objects
             Observers.Add(observer);
 
             return this;
+        }
+
+        private void CalculateScore()
+        {
+            this.score = (int)((1.5 * RingsHit) + (timer * 100));
         }
     }
 }

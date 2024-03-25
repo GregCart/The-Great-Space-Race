@@ -120,42 +120,42 @@ namespace The_Great_Space_Race.Objects
         {
             //this.em.entity.AngularVelocity = new BEPUutilities.Vector3(MathF.Min(this.em.entity.LinearVelocity.X + Speed, MAX_SPEED),
             //                                    this.em.entity.LinearVelocity.Y, this.em.entity.LinearVelocity.Z);
-            var tmp = new BEPUutilities.Vector3(0f, Speed / 3, 0f);
+            var tmp = new BEPUutilities.Vector3(0f, Speed / 5, 0f);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void turnRight()
         {
-            var tmp = new BEPUutilities.Vector3(0f, -Speed / 3, 0f);
+            var tmp = new BEPUutilities.Vector3(0f, -Speed / 5, 0f);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void lookUp()
         {
-            var tmp = new BEPUutilities.Vector3(-Speed/3, 0f, 0f);
+            var tmp = new BEPUutilities.Vector3(-Speed/5, 0f, 0f);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void lookDown()
         {
-            var tmp = new BEPUutilities.Vector3(Speed / 3, 0f, 0f);
+            var tmp = new BEPUutilities.Vector3(Speed / 5, 0f, 0f);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void tiltLeft()
         {
-            var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed / 3);
+            var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed / 5);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
 
         public void tiltRight()
         {
-            var tmp = new BEPUutilities.Vector3(0f, 0f, Speed / 3);
+            var tmp = new BEPUutilities.Vector3(0f, 0f, Speed / 5);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
