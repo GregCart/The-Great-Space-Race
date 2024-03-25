@@ -119,3 +119,10 @@
 /processorParam:TextureFormat=Color
 /build:Textures/james-webb-space-telescope-clicks-its-first-image-of-iconic-pillars-of-creation.webp
 
+#begin Textures/UI-font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Textures/UI-font.spritefont
+

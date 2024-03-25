@@ -1,5 +1,6 @@
 ﻿using BEPUphysics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,12 +10,13 @@ using The_Great_Space_Race.Objects;
 
 namespace Objects
 {
-    public class Course : GameComponent, IObserver<ModelCollision>, IObservable<bool>
+    public class Course : DrawableGameComponent, IObserver<ModelCollision>, IObservable<bool>
     {
         public string Name { get; set; }
         public Space space;
         public SkyBox skyBox;
         public Ring[] Rings;
+        public SpriteFont font;
         public bool IsOrdered;
         public bool HasFinnished;
         public double timer;
@@ -71,6 +73,11 @@ namespace Objects
                 space.Add(r.em.entity);
                 r.Subscribe(this);
             }
+
+            if (this.font == null)
+            {
+                this.font = Game.Content.Load<SpriteFont>("Textures/UI-font");
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -115,6 +122,14 @@ namespace Objects
                     this.Rings[ring + 1].isNextRing = true;
                 }
             }
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Time: " + timer / 100, new Vector2(10, 10), Color.White);
+            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Rings: " + RingsHit, new Vector2(10, 20), Color.White);
+
+            base.Draw(gameTime);
         }
 
         public IDisposable Subscribe(IObserver<bool> observer)

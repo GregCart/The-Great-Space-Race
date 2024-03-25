@@ -83,13 +83,16 @@ namespace Objects
                 return;
             }
 
-            this.hasPassed = true;
-            this.isNextRing = false;
-            RingPassed pass = new RingPassed(value);
-            pass.ring = this;
-            foreach (IObserver<RingPassed> observer in Observers)
+            if (!this.hasPassed && this.isNextRing || this.type == RingType.Finnish)
             {
-                observer.OnNext(pass);
+                this.hasPassed = true;
+                this.isNextRing = false;
+                RingPassed pass = new RingPassed(value);
+                pass.ring = this;
+                foreach (IObserver<RingPassed> observer in Observers)
+                {
+                    observer.OnNext(pass);
+                }
             }
         }
     }
