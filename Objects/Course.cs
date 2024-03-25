@@ -1,4 +1,5 @@
 ﻿using BEPUphysics;
+using BEPUphysics.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -62,6 +63,10 @@ namespace Objects
             foreach (Ring r in Rings)
             {
                 Game.Components.Add(r);
+                foreach (Entity e in r.colliders)
+                {
+                    this.space.Add(e);
+                }
             }
             box.Initialize();
             Game.Components.Add(box);
@@ -130,12 +135,12 @@ namespace Objects
 
         public override void Draw(GameTime gameTime)
         {
-            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Time: " + timer / 100, new Vector2(10, 10), Color.White);
-            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Rings: " + RingsHit, new Vector2(10, 30), Color.White);
+            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Time: " + timer / 1000, new Vector2(10, 10), Color.White);
+            ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Rings: " + RingsHit, new Vector2(10, 50), Color.White);
 
             if (this.HasFinnished)
             {
-                ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Your Score:\n" + score, new Vector2(50, 50), Color.White);
+                ((SpriteBatch)Game.Services.GetService(typeof(SpriteBatch))).DrawString(font, "Your Score:\n" + score, new Vector2(100, 100), Color.White);
             }
 
             base.Draw(gameTime);

@@ -77,11 +77,11 @@ namespace The_Great_Space_Race.Objects
             var tmp = new BEPUutilities.Vector3(0f, 0f, Speed);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyLinearImpulse(ref tmp);
-            /*if (playTime > mainEngine.Duration.TotalSeconds)
+            if (playTime > mainEngine.Duration.TotalSeconds)
             {
                 mainEngine.Play(.5f, 0f, 0f);
                 playTime = 0.0f;
-            }*/
+            }
         }
 
         public void slowDown()
@@ -91,11 +91,11 @@ namespace The_Great_Space_Race.Objects
             var tmp = new BEPUutilities.Vector3(0f, 0f, -Speed/2);
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyLinearImpulse(ref tmp);
-            /*if (playTime > mainEngine.Duration.TotalSeconds)
+            if (playTime > mainEngine.Duration.TotalSeconds)
             {
                 mainEngine.Play(.5f, 0f, 0f);
                 playTime = 0.0f;
-            }*/
+            }
         }
 
         public void moveLeft() 

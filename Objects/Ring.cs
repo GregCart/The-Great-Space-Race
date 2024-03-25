@@ -3,6 +3,8 @@ using The_Great_Space_Race;
 using System;
 using System.Collections.Generic;
 using The_Great_Space_Race.Objects;
+using BEPUphysics.Entities;
+using BEPUphysics.Entities.Prefabs;
 
 namespace Objects
 {
@@ -12,9 +14,9 @@ namespace Objects
         public RingType type;
         public EntityModel em;
         public bool isNextRing;
+        public List<Entity> colliders;
 
         private List<IObserver<RingPassed>> Observers;
-        private Matrix WorldTransform;
 
 
         public Ring(Game1 game) : base(game)
@@ -27,10 +29,10 @@ namespace Objects
             isNextRing = false;
 
             Observers = new List<IObserver<RingPassed>>();
+            colliders = new List<Entity>();
 
             em = new EntityModel("RingLampV3_FullRing_100_Halo", Matrix.CreateFromYawPitchRoll(0f, MathHelper.ToRadians(90f), 0f).toBEPU(), .08f, new BEPUutilities.Vector3(15, 1, 15), this.Game);
             em.Subscribe(this);
-            
 
             Game.Components.Add(em);
 
@@ -56,6 +58,11 @@ namespace Objects
             if (type == RingType.Start)
             {
                 this.isNextRing = true;
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                Entity e = new Cylinder(this.em.entity.WorldTransform.Translation, 5, 1);
+                colliders.Add(e);
             }
         }
 
@@ -90,6 +97,7 @@ namespace Objects
                 RingPassed pass = new RingPassed(value);
                 pass.ring = this;
                 pass.ringType = this.type;
+
                 foreach (IObserver<RingPassed> observer in Observers)
                 {
                     observer.OnNext(pass);
