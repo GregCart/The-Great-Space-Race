@@ -11,7 +11,7 @@ namespace Objects
 {
     public class Ring : DrawableGameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
     {
-        public static int debugId = 0;
+        public static int debugId = 1;
 
         public bool hasPassed;
         public RingType type;
@@ -26,7 +26,7 @@ namespace Objects
 
         public Ring(Game1 game) : base(game)
         {
-            this.entityScale = new Vector3(1, 5, 1);
+            this.entityScale = new Vector3(1, 1.5f, 7f);
         }
 
         public override void Initialize()
@@ -55,7 +55,14 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
-            this.colliders[0].WorldTransform = em.entity.WorldTransform;
+            this.colliders[0].WorldTransform = em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0, 0).toBEPU();
+            this.colliders[1].WorldTransform = em.entity.WorldTransform * Matrix.CreateRotationZ(MathHelper.ToRadians(45f)).toBEPU() * Matrix.CreateTranslation(4.5f, 5.5f, 0).toBEPU();
+            this.colliders[2].WorldTransform = em.entity.WorldTransform * Matrix.CreateRotationZ(MathHelper.ToRadians(90f)).toBEPU() * Matrix.CreateTranslation(0f, 7f, 0).toBEPU();
+            this.colliders[3].WorldTransform = em.entity.WorldTransform * Matrix.CreateRotationZ(MathHelper.ToRadians(135f)).toBEPU() * Matrix.CreateTranslation(-4.5f, 5.5f, 0).toBEPU();
+            this.colliders[4].WorldTransform = em.entity.WorldTransform * Matrix.CreateTranslation(-7f, 0, 0).toBEPU();
+            this.colliders[5].WorldTransform = em.entity.WorldTransform * Matrix.CreateRotationZ(MathHelper.ToRadians(-135f)).toBEPU() * Matrix.CreateTranslation(-4.5f, -5.5f, 0).toBEPU();
+            this.colliders[6].WorldTransform = em.entity.WorldTransform * Matrix.CreateRotationZ(MathHelper.ToRadians(-90f)).toBEPU() * Matrix.CreateTranslation(0f, -7f, 0).toBEPU();
+            this.colliders[7].WorldTransform = em.entity.WorldTransform * Matrix.CreateRotationZ(MathHelper.ToRadians(-45f)).toBEPU() * Matrix.CreateTranslation(4.5f, -5.5f, 0).toBEPU();
             if (isNextRing)
             {
                 this.em.DrawDuplicateModel(1.5f);
@@ -75,37 +82,42 @@ namespace Objects
                 this.isNextRing = true;
             }
             //Entity e = new Cylinder(this.em.Transform.Translation, entityScale.Y, entityScale.Z/2);
-            Entity e = new Box(this.em.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
-            colliders.Add(e);
-            /*for (int i = 0; i < 6; i++)
+            //Entity e = new Box(this.em.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
+            //colliders.Add(e);
+            for (int i = 0; i < 8; i++)
             {
-                Entity e = new Cylinder(this.em.entity.WorldTransform.Translation, 5, 1);
+                //Entity e = new Cylinder(this.em.Transform.Translation, entityScale.Y, entityScale.Z/2);
+                Entity e = new Box(this.em.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
                 colliders.Add(e);
-            }*/
+            }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.BlendState = BlendState.Opaque;
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-
-            Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[debug.Bones.Count];
-            debug.CopyAbsoluteBoneTransformsTo(transforms);
-            foreach (ModelMesh mesh in debug.Meshes)
+            //if (debugId != -1)
+            for (debugId = 0; debugId < 8; debugId++)
             {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
+                GraphicsDevice.BlendState = BlendState.Opaque;
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
-                    //                              POSITION                        SCALE                                               ???
-                    effect.World = transforms[mesh.ParentBone.Index] * Microsoft.Xna.Framework.Matrix.CreateScale(entityScale) * colliders[debugId].WorldTransform.toXNA();
-                    //effect.World = worldMatrix.toXNA();
-                    // camera effects
-                    effect.View = ((Ship)Game.Services.GetService(typeof(Ship))).Camera.ViewMatrix;
-                    effect.Projection = ((Ship)Game.Services.GetService(typeof(Ship))).Camera.ProjectionMatrix;
+                Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[debug.Bones.Count];
+                debug.CopyAbsoluteBoneTransformsTo(transforms);
+                foreach (ModelMesh mesh in debug.Meshes)
+                {
+                    foreach (BasicEffect effect in mesh.Effects)
+                    {
+                        effect.EnableDefaultLighting();
+
+                        //                              POSITION                        SCALE                                               ???
+                        effect.World = transforms[mesh.ParentBone.Index] * Microsoft.Xna.Framework.Matrix.CreateScale(entityScale) * colliders[debugId].WorldTransform.toXNA();
+                        //effect.World = worldMatrix.toXNA();
+                        // camera effects
+                        effect.View = ((Ship)Game.Services.GetService(typeof(Ship))).Camera.ViewMatrix;
+                        effect.Projection = ((Ship)Game.Services.GetService(typeof(Ship))).Camera.ProjectionMatrix;
+                    }
+                    mesh.Draw();
                 }
-                mesh.Draw();
             }
 
             base.Draw(gameTime);
