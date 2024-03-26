@@ -18,6 +18,7 @@ using Vector3 = BEPUutilities.Vector3;
 using static Objects.Helpers;
 using System.Diagnostics;
 using System.ComponentModel.Design;
+using BEPUphysics.CollisionShapes;
 
 
 namespace Objects
@@ -243,7 +244,7 @@ namespace Objects
         //Handle collision events from addison
         void CollisionHappened(EntityCollidable sender, Collidable other, CollidablePairHandler pair, ContactData contact)
         {
-            Debug.WriteLine("Collision detected.");
+            Debug.WriteLine("Collision detected with " + other.Shape.GetType().Name);
             if (Observer != null)
                 Observer.OnNext(new ModelCollision { type = EventType.Collision, entity = sender, obj = other, data = contact});
         }

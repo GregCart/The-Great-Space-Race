@@ -8,6 +8,8 @@ using BEPUutilities;
 
 using Matrix = Microsoft.Xna.Framework.Matrix;
 using MathHelper = Microsoft.Xna.Framework.MathHelper;
+using BEPUphysics.Entities;
+using BEPUphysics.Entities.Prefabs;
 
 
 namespace The_Great_Space_Race.Objects
@@ -44,6 +46,7 @@ namespace The_Great_Space_Race.Objects
             }
         }
         public float Speed { get; set; }
+        //public Entity collider;
 
         float dt;
         float yaw = MathHelper.ToRadians(0);
@@ -62,6 +65,7 @@ namespace The_Great_Space_Race.Objects
             em = new EntityModel("Intergalactic_Spaceship-(Wavefront)", this.WorldMatrix.toBEPU(), .2f, new BEPUutilities.Vector3(1, 1, 1), this.Game);
             mainEngine = Game.Content.Load<SoundEffect>("Sounds/CartoonCarSound");
             Camera = new Camera(Game, WorldMatrix.Translation, Speed);
+            //collider = new Capsule(em.Transform.Translation, 2f, 1f);
 
             Game.Components.Add(em);
             Game.Components.Add(Camera);
@@ -159,8 +163,6 @@ namespace The_Great_Space_Race.Objects
             tmp = BEPUutilities.Quaternion.Transform(tmp, this.em.entity.Orientation);
             this.em.entity.ApplyAngularImpulse(ref tmp);
         }
-
-        
 
         public override void Update(GameTime gameTime)
         {

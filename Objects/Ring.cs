@@ -5,11 +5,14 @@ using System.Collections.Generic;
 using The_Great_Space_Race.Objects;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Objects
 {
-    public class Ring : GameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
+    public class Ring : DrawableGameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
     {
+        public static int debugId = 0;
+
         public bool hasPassed;
         public RingType type;
         public EntityModel em;
@@ -17,10 +20,13 @@ namespace Objects
         public List<Entity> colliders;
 
         private List<IObserver<RingPassed>> Observers;
+        private Model debug;
+        private Vector3 entityScale;
 
 
         public Ring(Game1 game) : base(game)
         {
+            this.entityScale = new Vector3(1, 5, 1);
         }
 
         public override void Initialize()
@@ -39,8 +45,17 @@ namespace Objects
             base.Initialize();
         }
 
+        protected override void LoadContent()
+        {
+            this.debug = Game.Content.Load<Model>("Models/DefaultCube_1x1x1");
+
+
+            base.LoadContent();
+        }
+
         public override void Update(GameTime gameTime)
         {
+            this.colliders[0].WorldTransform = em.entity.WorldTransform;
             if (isNextRing)
             {
                 this.em.DrawDuplicateModel(1.5f);
@@ -59,11 +74,41 @@ namespace Objects
             {
                 this.isNextRing = true;
             }
-            for (int i = 0; i < 6; i++)
+            //Entity e = new Cylinder(this.em.Transform.Translation, entityScale.Y, entityScale.Z/2);
+            Entity e = new Box(this.em.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
+            colliders.Add(e);
+            /*for (int i = 0; i < 6; i++)
             {
                 Entity e = new Cylinder(this.em.entity.WorldTransform.Translation, 5, 1);
                 colliders.Add(e);
+            }*/
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+            Microsoft.Xna.Framework.Matrix[] transforms = new Microsoft.Xna.Framework.Matrix[debug.Bones.Count];
+            debug.CopyAbsoluteBoneTransformsTo(transforms);
+            foreach (ModelMesh mesh in debug.Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();
+
+                    //                              POSITION                        SCALE                                               ???
+                    effect.World = transforms[mesh.ParentBone.Index] * Microsoft.Xna.Framework.Matrix.CreateScale(entityScale) * colliders[debugId].WorldTransform.toXNA();
+                    //effect.World = worldMatrix.toXNA();
+                    // camera effects
+                    effect.View = ((Ship)Game.Services.GetService(typeof(Ship))).Camera.ViewMatrix;
+                    effect.Projection = ((Ship)Game.Services.GetService(typeof(Ship))).Camera.ProjectionMatrix;
+                }
+                mesh.Draw();
             }
+
+            base.Draw(gameTime);
         }
 
         public IDisposable Subscribe(IObserver<RingPassed> observer)
@@ -85,7 +130,7 @@ namespace Objects
 
         public void OnNext(ModelCollision value)
         {
-            if (value.type != EventType.Collision)
+            if (value.type != EventType.Collision || value.obj.Shape.GetType().Name != "CylinderShape")
             {
                 return;
             }
