@@ -157,7 +157,7 @@ namespace Objects
 
         private void CalculateScore()
         {
-            this.score = (int)((1.5 * RingsHit) + (timer * 100));
+            this.score = (int)((1.5 * RingsHit) * (timer * 100));
         }
     }
 }
