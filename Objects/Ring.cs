@@ -68,7 +68,7 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
-
+                                                // should be Scale, Rotate, WorldMatrix, Translation
             this.colliders[0].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU();
             this.colliders[1].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(45f)).toBEPU();
             this.colliders[2].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(90f)).toBEPU();
