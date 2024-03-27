@@ -6,12 +6,15 @@ using The_Great_Space_Race.Objects;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace Objects
 {
     public class Ring : DrawableGameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
     {
         public static int debugId = 2;
+
+        private static int ringId = 0;
 
         public bool hasPassed;
         public RingType type;
@@ -22,11 +25,13 @@ namespace Objects
         private List<IObserver<RingPassed>> Observers;
         private Model debug;
         private Vector3 entityScale;
+        private int RingId;
 
 
         public Ring(Game1 game) : base(game)
         {
             this.entityScale = new Vector3(1, 1.5f, 7f);
+            this.RingId = ringId++;
         }
 
         public override void Initialize()
@@ -50,15 +55,6 @@ namespace Objects
                 this.colliders.Add(e);
             }
 
-            this.colliders[0].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU();
-            this.colliders[1].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(45f)).toBEPU();
-            this.colliders[2].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(90f)).toBEPU();
-            this.colliders[3].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(135f)).toBEPU();
-            this.colliders[4].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(180f)).toBEPU();
-            this.colliders[5].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(225f)).toBEPU();
-            this.colliders[6].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(270f)).toBEPU();
-            this.colliders[7].WorldTransform = em.Transform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(315f)).toBEPU();
-
             base.Initialize();
         }
 
@@ -71,11 +67,22 @@ namespace Objects
         }
 
         public override void Update(GameTime gameTime)
-        {            
+        {
+
+            this.colliders[0].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU();
+            this.colliders[1].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(45f)).toBEPU();
+            this.colliders[2].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(90f)).toBEPU();
+            this.colliders[3].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(135f)).toBEPU();
+            this.colliders[4].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(180f)).toBEPU();
+            this.colliders[5].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(225f)).toBEPU();
+            this.colliders[6].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(270f)).toBEPU();
+            this.colliders[7].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(315f)).toBEPU();
+
             if (isNextRing)
             {
                 this.em.DrawDuplicateModel(1.5f);
             }
+            Debug.WriteLine(RingId + " colliders[" + debugId + "]: " + this.colliders[0].WorldTransform.ToString());
 
             base.Update(gameTime);
         }
