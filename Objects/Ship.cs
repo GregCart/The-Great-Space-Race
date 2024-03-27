@@ -71,6 +71,9 @@ namespace The_Great_Space_Race.Objects
             Game.Components.Add(Camera);
             Game.Services.AddService(Camera);
 
+            Debug.WriteLine("em: " + this.em.entity.WorldTransform.ToString());
+            Debug.WriteLine("collider:" + this.collider.WorldTransform.ToString());
+
             ((InputManager)Game.Services.GetService(typeof(InputManager))).Subscribe(this);
         }
 
