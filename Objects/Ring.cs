@@ -142,7 +142,7 @@ namespace Objects
 
         public void OnNext(ModelCollision value)
         {
-            if (value.type != EventType.Collision || value.obj.Shape.GetType().Name != "CylinderShape")
+            if (value.type != EventType.Collision || value.obj.Shape.GetType().Name != "CapsuleShape")
             {
                 return;
             }

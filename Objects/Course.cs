@@ -71,7 +71,7 @@ namespace Objects
             box.Initialize();
             Game.Components.Add(box);
 
-            //this.space.Add(ship.collider);
+            this.space.Add(ship.collider);
 
             this.LoadContent();
         }
