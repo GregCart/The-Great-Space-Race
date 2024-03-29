@@ -69,7 +69,7 @@ namespace Objects
         public override void Update(GameTime gameTime)
         {
                                                 // should be Scale, Rotate, WorldMatrix, Translation
-            this.colliders[0].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 0f).toBEPU();
+            this.colliders[0].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(0f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 0f).toBEPU();
             this.colliders[1].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(45f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(5f, 5f, 0f).toBEPU();
             this.colliders[2].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(90f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(0f, 7f, 0f).toBEPU();
             this.colliders[3].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(135f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-5f, 5f, 0f).toBEPU();
@@ -82,7 +82,7 @@ namespace Objects
             {
                 this.em.DrawDuplicateModel(1.5f);
             }
-            Debug.WriteLine(RingId + " colliders[" + debugId + "]: " + this.colliders[0].WorldTransform.ToString());
+            Debug.WriteLine(RingId + " colliders[" + debugId + "]: " + this.colliders[debugId].WorldTransform.ToString());
 
             base.Update(gameTime);
         }
