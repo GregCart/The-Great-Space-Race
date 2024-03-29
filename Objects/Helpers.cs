@@ -87,6 +87,11 @@ namespace Objects
             return ret.ToArray();
         }
 
+        public static Microsoft.Xna.Framework.Quaternion toXNA(this BEPUutilities.Quaternion quat)
+        {
+            return new Microsoft.Xna.Framework.Quaternion(quat.X, quat.Y, quat.Z, quat.W);
+        }
+
         public static void UpdateMinMax(this Microsoft.Xna.Framework.Vector3 vert, ref Microsoft.Xna.Framework.Vector3 currentMax, ref Microsoft.Xna.Framework.Vector3 currentMin)
         {
             if (vert.X > currentMax.X)

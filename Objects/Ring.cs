@@ -12,7 +12,7 @@ namespace Objects
 {
     public class Ring : DrawableGameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
     {
-        public static int debugId = 1;
+        public static int debugId = 0;
 
         private static int ringId = 0;
 
@@ -69,7 +69,7 @@ namespace Objects
         public override void Update(GameTime gameTime)
         {
                                                 // should be Scale, Rotate, WorldMatrix, Translation
-            this.colliders[0].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(0f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 0f).toBEPU();
+            this.colliders[0].WorldTransform = Matrix.CreateFromQuaternion(this.em.entity.Orientation.toXNA()).toBEPU() * Matrix.CreateRotationY(MathHelper.ToRadians(0f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 0f).toBEPU();
             this.colliders[1].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(45f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(5f, 5f, 0f).toBEPU();
             this.colliders[2].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(90f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(0f, 7f, 0f).toBEPU();
             this.colliders[3].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(135f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-5f, 5f, 0f).toBEPU();
@@ -102,7 +102,7 @@ namespace Objects
         public override void Draw(GameTime gameTime)
         {
             if (Ring.debugId != -1)
-                for (debugId = 0; debugId < 8; debugId++)
+                //for (debugId = 0; debugId < 8; debugId++)
                 {
                     GraphicsDevice.BlendState = BlendState.Opaque;
                     GraphicsDevice.DepthStencilState = DepthStencilState.Default;
