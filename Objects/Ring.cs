@@ -12,7 +12,7 @@ namespace Objects
 {
     public class Ring : DrawableGameComponent, IObservable<RingPassed>, IObserver<ModelCollision>
     {
-        public static int debugId = 2;
+        public static int debugId = 1;
 
         private static int ringId = 0;
 
@@ -69,14 +69,14 @@ namespace Objects
         public override void Update(GameTime gameTime)
         {
                                                 // should be Scale, Rotate, WorldMatrix, Translation
-            this.colliders[0].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU();
-            this.colliders[1].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(45f)).toBEPU();
-            this.colliders[2].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(90f)).toBEPU();
-            this.colliders[3].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(135f)).toBEPU();
-            this.colliders[4].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(180f)).toBEPU();
-            this.colliders[5].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(225f)).toBEPU();
-            this.colliders[6].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(270f)).toBEPU();
-            this.colliders[7].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 5f).toBEPU() * Matrix.CreateRotationZ(MathHelper.ToRadians(315f)).toBEPU();
+            this.colliders[0].WorldTransform = this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 0f).toBEPU();
+            this.colliders[1].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(45f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(5f, 5f, 0f).toBEPU();
+            this.colliders[2].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(90f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(0f, 7f, 0f).toBEPU();
+            this.colliders[3].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(135f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-5f, 5f, 0f).toBEPU();
+            this.colliders[4].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(180f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-7f, 0f, 0f).toBEPU();
+            this.colliders[5].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(225f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-5f, -5f, 0f).toBEPU();
+            this.colliders[6].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(270f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(0f, -7f, 0f).toBEPU();
+            this.colliders[7].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(315f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(5f, -5f, 0f).toBEPU();
 
             if (isNextRing)
             {
