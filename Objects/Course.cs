@@ -71,7 +71,7 @@ namespace Objects
             box.Initialize();
             Game.Components.Add(box);
 
-            this.space.Add(ship.collider);
+            //this.space.Add(ship.collider);
 
             this.LoadContent();
         }
@@ -95,7 +95,8 @@ namespace Objects
             if (!started || !HasFinnished)
             {
                 space.Update();
-                timer += gameTime.ElapsedGameTime.Milliseconds;
+                if (started)
+                    timer += gameTime.ElapsedGameTime.Milliseconds;
             }
 
             base.Update(gameTime);
@@ -157,7 +158,7 @@ namespace Objects
 
         private void CalculateScore()
         {
-            this.score = (int)((1.5 * RingsHit) * (timer * 100));
+            this.score = (int)(((15 * RingsHit) * (500 / timer)) * 1000);
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Objects
         private Model debug;
         private Vector3 entityScale;
         private int RingId;
+        private bool isUp = false;
 
 
         public Ring(Game1 game) : base(game)
@@ -68,23 +69,30 @@ namespace Objects
 
         public override void Update(GameTime gameTime)
         {
-                                                // should be Scale, Rotate, WorldMatrix, Translation
-            this.colliders[0].WorldTransform = Matrix.CreateFromQuaternion(this.em.entity.Orientation.toXNA()).toBEPU() * Matrix.CreateRotationY(MathHelper.ToRadians(0f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(7f, 0f, 0f).toBEPU();
-            this.colliders[1].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(45f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(5f, 5f, 0f).toBEPU();
-            this.colliders[2].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(90f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(0f, 7f, 0f).toBEPU();
-            this.colliders[3].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(135f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-5f, 5f, 0f).toBEPU();
-            this.colliders[4].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(180f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-7f, 0f, 0f).toBEPU();
-            this.colliders[5].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(225f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(-5f, -5f, 0f).toBEPU();
-            this.colliders[6].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(270f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(0f, -7f, 0f).toBEPU();
-            this.colliders[7].WorldTransform = Matrix.CreateRotationY(MathHelper.ToRadians(315f)).toBEPU() * this.em.entity.WorldTransform * Matrix.CreateTranslation(5f, -5f, 0f).toBEPU();
-
+            if (!isUp)
+            {
+                UpdateRingPos();
+                isUp = true;
+            }
             if (isNextRing)
             {
                 this.em.DrawDuplicateModel(1.5f);
             }
-            Debug.WriteLine(RingId + " colliders[" + debugId + "]: " + this.colliders[debugId].WorldTransform.ToString());
+            //Debug.WriteLine(RingId + " colliders[" + debugId + "]: " + this.colliders[debugId].WorldTransform.ToString());
 
             base.Update(gameTime);
+        }
+
+        public void UpdateRingPos()
+        {
+            for (float f = 0, i = 0; f < 360; f += 45, i += 1)
+            {
+                // should be Scale, Rotate, WorldMatrix, Translation
+                this.colliders[(int)i].WorldTransform = Matrix.CreateTranslation(7f, 0f, 0f).toBEPU() *
+                                                    Matrix.CreateRotationY(MathHelper.ToRadians(f)).toBEPU() *
+                                                    Matrix.CreateFromQuaternion(this.em.entity.Orientation.toXNA()).toBEPU() *
+                                                    Matrix.CreateTranslation(this.em.entity.WorldTransform.Translation.toXNA()).toBEPU();
+            }
         }
 
         public void SetUp(RingType type, Vector3 location, Vector3 rotation) 
@@ -102,7 +110,7 @@ namespace Objects
         public override void Draw(GameTime gameTime)
         {
             if (Ring.debugId != -1)
-                //for (debugId = 0; debugId < 8; debugId++)
+                for (debugId = 0; debugId < 8; debugId++)
                 {
                     GraphicsDevice.BlendState = BlendState.Opaque;
                     GraphicsDevice.DepthStencilState = DepthStencilState.Default;
@@ -149,12 +157,12 @@ namespace Objects
 
         public void OnNext(ModelCollision value)
         {
-            if (value.type != EventType.Collision || value.obj.Shape.GetType().Name != "CapsuleShape")
+            if (value.type != EventType.Collision || value.obj.Shape.GetType().Name != "CylinderShape")
             {
                 return;
             }
 
-            if (!this.hasPassed || this.type == RingType.Finnish)
+            if (!this.hasPassed || this.isNextRing || this.type == RingType.Finnish)
             {
                 this.hasPassed = true;
                 this.isNextRing = false;

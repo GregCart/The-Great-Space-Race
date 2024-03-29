@@ -1,4 +1,5 @@
 ﻿using BEPUphysics;
+using BEPUphysics.CollisionShapes;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUphysics.Paths.PathFollowing;
@@ -26,7 +27,8 @@ namespace The_Great_Space_Race
         private Ship ship;
 
         //Space testSpace;
-        Model ring;
+        //Model Cube;
+        //Entity testBox;
 
 
         public Game1()
@@ -43,6 +45,7 @@ namespace The_Great_Space_Race
             inputManager = new InputManager(this);
             cources = new List<Course>();
             ship = new Ship(this);
+            //testSpace = new Space();
 
             Services.AddService(typeof(RaceManager), raceManager);
             Services.AddService(typeof(InputManager), inputManager);
@@ -64,6 +67,8 @@ namespace The_Great_Space_Race
             Services.AddService(typeof(GraphicsDeviceManager), _graphics);
 
             LoadTestCube();
+
+            //CollisionTestBox();
 
             base.LoadContent();
         }
@@ -159,5 +164,15 @@ namespace The_Great_Space_Race
             RaceManager.Instance.LoadActiveTrack(c);
             c.UpdateContent(false, rings, box);
         }
+
+        /*void CollisionTestBox()
+        {
+            testBox = new Box(new Vector3(3, 0, 0), 1, 1, 1);
+            //testSpace.Add(testBox);
+            //testSpace.Add(ship.em.entity);
+            //testSpace.Add(ship.collider);
+            //RaceManager.Instance.activeTrack.space.Add(testBox);
+            Cube = Content.Load<Model>("Models/DefaultCube_1x1x1");
+        }*/
     }
 }

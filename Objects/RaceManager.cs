@@ -18,7 +18,7 @@ namespace Objects
             }
         }
         
-        protected Course activeTrack;
+        public Course activeTrack { get; protected set; }
 
         private bool trackLoaded = false;
 

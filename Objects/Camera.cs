@@ -75,7 +75,7 @@ namespace Objects
             this.WorldMatrix = world;
             //this.ViewMatrix = Matrix.CreateLookAt(Position, Position + new Vector3(0.0f, 0f, .5f), world.Up);
             this.ViewMatrix = Matrix.CreateLookAt(Position, Position + BEPUutilities.Quaternion.Transform(new Vector3(0.0f, 0f, .5f).toBEPU(), e.Orientation).toXNA(), world.Up);
-            this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(90f), AspectRatio, .2f, 10000f);
+            this.ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(85f), AspectRatio, .2f, 10000f);
 
             //Debug.WriteLine("Camera: " + this.WorldMatrix.ToString());
         }

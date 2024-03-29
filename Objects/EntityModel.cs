@@ -43,6 +43,7 @@ namespace Objects
         private List<CollisionTriangle> triangles;
         private Vector3 entityScale;
         private bool dupping;
+        private bool isTrigger = true;
 
 
         /// <summary>
@@ -61,6 +62,18 @@ namespace Objects
             this.Transform = transform;
             this.ModelScale = modelScale;
             this.entityScale = entityScale;
+        }
+
+        public EntityModel(string modelPath, Matrix transform, float modelScale, Vector3 entityScale, Game game, bool trigger)
+            : base(game)
+        {
+            this.modelPath = modelPath;
+            this.model = new List<Model>();
+            this.model.Add(null);
+            this.Transform = transform;
+            this.ModelScale = modelScale;
+            this.entityScale = entityScale;
+            this.isTrigger = trigger;
         }
 
         public EntityModel(Entity entity, Model model, Matrix transform, Game game)
@@ -114,17 +127,19 @@ namespace Objects
                 //this.entity = new Cylinder(this.Transform.Translation, this.max.Y - this.min.Y, (this.max.X - this.min.X) / 2f);
                 this.entity = new Cylinder(this.Transform.Translation, entityScale.Y, entityScale.Z/2);
                 //this.entity = new Box(this.Transform.Translation, entityScale.X, entityScale.Y, entityScale.Z);
-                //From Addison
-                //Disable solver to make box generate collision events but no affect physics(like a trigger in unity)
-                //More about collision rules: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionRules.md
-                this.entity.CollisionInformation.CollisionRules.Personal = CollisionRule.NoSolver;
-                this.entity.Material.Bounciness = 1;
-                //Add collision start listener
-                //More about collision events: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionEvents.md
-                this.entity.CollisionInformation.Events.ContactCreated += CollisionHappened;
+                if (isTrigger)
+                {
+                    //From Addison
+                    //Disable solver to make box generate collision events but no affect physics(like a trigger in unity)
+                    //More about collision rules: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionRules.md
+                    this.entity.CollisionInformation.CollisionRules.Personal = CollisionRule.NoSolver;
+                    this.entity.Material.Bounciness = 1;
+                    //Add collision start listener
+                    //More about collision events: https://github.com/bepu/bepuphysics1/blob/master/Documentation/CollisionEvents.md
+                    this.entity.CollisionInformation.Events.ContactCreated += CollisionHappened;
+                }
             }
             this.entity.WorldTransform = this.Transform;
-            this.entity.BecomeDynamic(2);
 
 
             //Collect any bone transformations in the model itself.
